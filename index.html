@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Abiha Portfolio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jacquard+12&family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+
+<body>
+
+  <!-- TOP PROGRESS BAR -->
+  <div class="top-progress" aria-hidden="true">
+    <div class="top-progress-fill" id="topProgressFill"></div>
+  </div>
+
+  <!-- Fixed UI -->
+  <header class="ui">
+    <img class="logo bob-sync" id="logoBtn" src="assets/logo.png" alt="Abiha logo" />
+  </header>
+
+  <!-- Menu -->
+  <div class="site-menu" id="siteMenu" aria-hidden="true">
+    <button class="site-menu-close" id="siteMenuClose" type="button" aria-label="Close menu">x</button>
+
+    <button class="site-menu-item" type="button" data-target="3">
+      <span class="site-menu-line site-menu-regular">Project 1 -</span>
+      <span class="site-menu-line site-menu-medium">Past Forward</span>
+    </button>
+
+    <button class="site-menu-item" type="button" data-target="4">
+      <span class="site-menu-line site-menu-regular">Project 2 -</span>
+      <span class="site-menu-line site-menu-medium">Unbottle Yourself</span>
+    </button>
+
+    <button class="site-menu-item site-menu-single" type="button" data-target="7">
+      <span class="site-menu-line site-menu-medium">Say Hi</span>
+    </button>
+
+    <button class="site-menu-item site-menu-single" type="button" data-target="0">
+      <span class="site-menu-line site-menu-medium">Home</span>
+    </button>
+  </div>
+
+  <main class="scene" id="scene">
+    <div class="world" id="world">
+
+      <!-- Layers -->
+      <div class="layer sky"></div>
+      <div class="layer clouds"></div>
+      <div class="layer grass"></div>
+
+      <!-- PANEL 1 -->
+      <section class="panel" data-panel="0">
+        <div class="home-design-frame">
+          <div class="textblock two-line-fixed intro-text-two" data-type="two-line-fixed">
+            <div class="line mono slot-1">
+              <span class="chunk" data-text="Hello,"></span><span class="chunk" data-text=" you&#39;ve"></span>
+            </div>
+            <div class="line jacquard big slot-2" data-text="Arrived"></div>
+
+            <div class="line mono slot-3 intro-subtitle">
+              <span id="introSubPrefix"></span><span id="introSubWrong"></span><span id="introSubMedium" class="intro-sub-medium"></span><span id="introSubSuffix"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL 2 -->
+      <section class="panel" data-panel="1">
+        <div class="home-design-frame">
+          <div class="textblock two-line-fixed intro-text-two" data-type="two-line-fixed">
+            <div class="line mono slot-1" data-text="I am"></div>
+            <div class="line jacquard big slot-2" data-text="Abiha,"></div>
+          </div>
+
+          <img
+            class="home-asset home-asset-abiha"
+            src="assets/im_abiha.png"
+            alt=""
+            draggable="false"
+          />
+        </div>
+      </section>
+
+      <!-- PANEL 3 -->
+      <section class="panel" data-panel="2">
+        <div class="home-design-frame">
+          <div class="textblock one-line intro-text-design" data-type="one-line">
+            <div class="line mono design-line">
+              <span class="t-normal" data-text="I design stories, systems,
+and "></span><em class="t-italic" data-text="experiences."></em>
+            </div>
+          </div>
+
+          <img
+            class="home-asset home-asset-design"
+            src="assets/i_design.png"
+            alt=""
+            draggable="false"
+          />
+        </div>
+      </section>
+
+      <!-- PANEL 4: Past Forward -->
+      <section class="panel" data-panel="3">
+        <div class="pf-stage" id="pfStage">
+
+          <div class="pf-design-frame" id="pfDesignFrame">
+
+            <div class="pf-teaser" id="pfTeaser" aria-label="Past Forward teaser">
+
+              <img class="pf-glass"
+                   src="assets/past-forward/pf_card.png"
+                   alt=""
+                   draggable="false" />
+
+              <img class="pf-book bob-sync bob-teaser"
+                   src="assets/past-forward/pf_book_card.png"
+                   alt=""
+                   draggable="false" />
+
+              <div class="pf-overlay" id="pfOverlay" aria-hidden="true">
+                <div class="pf-overlay-clip">
+                  <div class="pf-overlay-panel">
+
+                    <img class="pf-overlay-img"
+                         src="assets/past-forward/pf_card_overlay.png"
+                         alt=""
+                         draggable="false" />
+
+                    <div class="pf-overlay-inner">
+                      <div class="pf-overlay-title">Past Forward</div>
+
+                      <div class="pf-overlay-desc">
+                        Storytelling,<br/>
+                        Branding,<br/>
+                        Design
+                      </div>
+
+                      <button class="pf-view-btn" id="pfViewBtn" type="button">
+                        View Project
+                      </button>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="pf-project" id="pfProject" aria-hidden="true">
+              <div class="pf-viewport-wrap" id="pfViewportWrap">
+
+                <div class="pf-viewport" id="pfViewport">
+
+                  <div class="pf-viewport-clouds" aria-hidden="true"></div>
+
+                  <button class="pf-exit" id="pfExitBtn" type="button" aria-label="Exit project">
+                    x
+                  </button>
+
+                  <div class="pf-vp-content" id="pfVpContent">
+
+                    <section class="pf-vp-slide is-active" data-pf-slide="0">
+                      <img class="pf-hero-book"
+                           src="assets/past-forward/pf_book.png"
+                           alt=""
+                           draggable="false"
+                           data-optional="true" />
+
+                      <img class="pf-hero-title"
+                           src="assets/past-forward/pf_title.png"
+                           alt=""
+                           draggable="false"
+                           data-optional="true" />
+                    </section>
+
+                    <section class="pf-vp-slide" data-pf-slide="1">
+                      <div class="pf-text-wrap">
+                        <div class="pf-text-scroll" id="pfTextScroll">Past Forward is a concept that derives from the
+recognition that navigating through relationships
+in life, especially platonic companionships, often
+involves encountering negative experiences that
+prove to be painful setbacks in individuals'
+personal growth, affecting their self-esteem,
+trust, and the personal narrative of the life they
+have lived.
+
+Building on this awareness, Past Forward presents
+a constructive approach designed to empower
+individuals in overcoming the lingering bitterness
+from such negative experiences. This approach
+centres around revisiting and cherishing positive
+memories,  offering a practical framework for
+healing and personal growth.
+
+This concept comes to life in the form of a book,
+consisting of 3 chapters; each a narrative from an
+individual about their journey moving on from such
+a relationship
+serving as an inspiration for the reader to begin
+their own journey of moving by harnessing the
+healing power of positive memories.</div>
+                      </div>
+                    </section>
+
+                    <section class="pf-vp-slide" data-pf-slide="2">
+                      <div class="pf-slide-title">Merchandise</div>
+                      <img class="pf-slide-image"
+                           src="assets/past-forward/pf_merchandise.png"
+                           alt=""
+                           draggable="false"
+                           data-optional="true" />
+                    </section>
+
+                    <section class="pf-vp-slide" data-pf-slide="3">
+                      <div class="pf-slide-title">Social Media</div>
+                      <img class="pf-slide-image"
+                           src="assets/past-forward/pf_social_media.png"
+                           alt=""
+                           draggable="false"
+                           data-optional="true" />
+                    </section>
+
+                    <section class="pf-vp-slide" data-pf-slide="4">
+                      <div class="pf-slide-title">Website</div>
+                      <img class="pf-slide-image"
+                           src="assets/past-forward/pf_website.png"
+                           alt=""
+                           draggable="false"
+                           data-optional="true" />
+                    </section>
+
+                    <section class="pf-vp-slide" data-pf-slide="5">
+                      <button class="pf-read-btn" id="pfReadBtn" type="button">
+                        <span class="pf-read-text">Read the book</span>
+                        <img class="pf-read-flower"
+                             src="assets/past-forward/pf_flower.png"
+                             alt=""
+                             draggable="false"
+                             data-optional="true" />
+                      </button>
+                    </section>
+
+                  </div>
+
+                  <div class="pf-book-reader" id="pfBookReader" aria-hidden="true">
+                    <img class="pf-book-page" id="pfBookPageImg"
+                         src="assets/past-forward/pf_page_1.png"
+                         alt=""
+                         draggable="false" />
+                  </div>
+
+                  <div class="pf-vp-stroke" id="pfVpStroke" aria-hidden="true"></div>
+
+                </div>
+
+                <button class="pf-book-close" id="pfBookCloseBtn" type="button" aria-label="Close book">x</button>
+                <button class="pf-book-nav pf-book-prev" id="pfBookPrevBtn" type="button">Previous</button>
+                <button class="pf-book-nav pf-book-next" id="pfBookNextBtn" type="button">Next</button>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL 5: Tuborg -->
+      <section class="panel" data-panel="4">
+        <div class="tb-stage" id="tbStage">
+
+          <div class="tb-design-frame" id="tbDesignFrame">
+
+            <div class="tb-teaser" id="tbTeaser" aria-label="Tuborg teaser">
+
+              <img class="tb-glass"
+                   src="assets/past-forward/pf_card.png"
+                   alt=""
+                   draggable="false" />
+
+              <img class="tb-bottle bob-sync bob-teaser"
+                   src="assets/tuborg_bottle.png"
+                   alt=""
+                   draggable="false" />
+
+              <div class="tb-overlay" id="tbOverlay" aria-hidden="true">
+                <div class="tb-overlay-clip">
+                  <div class="tb-overlay-panel">
+
+                    <img class="tb-overlay-img"
+                         src="assets/past-forward/pf_card_overlay.png"
+                         alt=""
+                         draggable="false" />
+
+                    <div class="tb-overlay-inner">
+                      <div class="tb-overlay-title">Unbottle Yourself</div>
+
+                      <div class="tb-overlay-desc">
+                        Interactive<br/>
+                        campaign for<br/>
+                        Tuborg D&amp;AD New<br/>
+                        Blood Awards Brief
+                      </div>
+
+                      <button class="tb-view-btn" id="tbViewBtn" type="button">
+                        View Project
+                      </button>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="tb-project" id="tbProject" aria-hidden="true">
+              <div class="tb-viewport-wrap" id="tbViewportWrap">
+
+                <div class="tb-viewport" id="tbViewport">
+                  <div class="tb-viewport-clouds" aria-hidden="true"></div>
+
+                  <button class="tb-exit" id="tbExitBtn" type="button" aria-label="Exit project">x</button>
+
+                  <div class="tb-vp-content" id="tbVpContent">
+                    <section class="tb-vp-slide is-active" data-tb-slide="0">
+                      <img class="tb-slide-img" src="assets/tuborg_1.png" alt="" draggable="false" />
+                    </section>
+                    <section class="tb-vp-slide" data-tb-slide="1">
+                      <img class="tb-slide-img" src="assets/tuborg_2.png" alt="" draggable="false" />
+                    </section>
+                    <section class="tb-vp-slide" data-tb-slide="2">
+                      <img class="tb-slide-img" src="assets/tuborg_3.png" alt="" draggable="false" />
+                    </section>
+                    <section class="tb-vp-slide" data-tb-slide="3">
+                      <img class="tb-slide-img" src="assets/tuborg_4.png" alt="" draggable="false" />
+                    </section>
+                    <section class="tb-vp-slide" data-tb-slide="4">
+                      <img class="tb-slide-img" src="assets/tuborg_5.png" alt="" draggable="false" />
+                    </section>
+                    <section class="tb-vp-slide" data-tb-slide="5">
+                      <img class="tb-slide-img" src="assets/tuborg_6.png" alt="" draggable="false" />
+                    </section>
+                    <section class="tb-vp-slide" data-tb-slide="6">
+                      <img class="tb-slide-img" src="assets/tuborg_7.png" alt="" draggable="false" />
+                      <button class="tb-enter-btn" id="tbEnterBtn" type="button">
+                        Enter the experience
+                      </button>
+                    </section>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL 6: Jewellery -->
+      <section class="panel" data-panel="5">
+        <div class="jw-stage" id="jwStage">
+
+          <div class="jw-design-frame" id="jwDesignFrame">
+
+            <div class="jw-teaser" id="jwTeaser" aria-label="Jewellery teaser">
+
+              <img class="jw-glass"
+                   src="assets/past-forward/pf_card.png"
+                   alt=""
+                   draggable="false" />
+
+              <img class="jw-jewel bob-sync bob-teaser"
+                   src="assets/jewellery_project.png"
+                   alt=""
+                   draggable="false" />
+
+              <div class="jw-overlay" id="jwOverlay" aria-hidden="true">
+                <div class="jw-overlay-clip">
+                  <div class="jw-overlay-panel">
+
+                    <img class="jw-overlay-img"
+                         src="assets/past-forward/pf_card_overlay.png"
+                         alt=""
+                         draggable="false" />
+
+                    <div class="jw-overlay-inner">
+                      <div class="jw-overlay-title">
+                        Jewellery design<br/>
+                        and interactive<br/>
+                        marketing<br/>
+                        campaign
+                      </div>
+
+                      <div class="jw-overlay-soon">Coming Soon</div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL 7: Portfolio -->
+      <section class="panel" data-panel="6">
+        <div class="home-design-frame">
+          <div class="portfolio-slide-copy bob-sync">
+            <div class="portfolio-slide-title">
+              Abiha Imran Selected works personal portfolio 2026
+            </div>
+
+            <div class="portfolio-slide-sub">
+              UI UX Designer . Website Designer . Branding &amp; Visual Identity Expert .<br/>
+              Creative Art Director . Jewellery Designer
+            </div>
+          </div>
+
+          <img
+            class="home-asset home-asset-portfolio"
+            src="assets/portfolio_outro.png"
+            alt=""
+            draggable="false"
+          />
+        </div>
+      </section>
+
+      <!-- PANEL 8: Say Hi -->
+      <section class="panel" data-panel="7">
+        <div class="home-design-frame">
+          <div class="sayhi-hitbox" id="sayHiHitbox">
+            <img
+              class="sayhi-rec"
+              id="sayHiRec"
+              src="assets/say_hi_rect.png"
+              alt=""
+              draggable="false"
+            />
+
+            <div class="sayhi-default-text bob-sync" id="sayHiDefaultText" data-text="Say Hi if you’re here"></div>
+
+            <div class="sayhi-hover-text bob-sync" id="sayHiHoverText">
+              On
+              <button class="sayhi-link-btn" id="sayHiInstagramBtn" type="button">Instagram</button>
+              or
+              <button class="sayhi-link-btn" id="sayHiEmailBtn" type="button">email me!</button>
+            </div>
+
+            <img
+              class="home-asset home-asset-sayhi"
+              id="sayHiImg"
+              src="assets/say_hi_1.png"
+              alt=""
+              draggable="false"
+            />
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
