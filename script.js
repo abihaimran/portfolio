@@ -1,3 +1,6 @@
+const DESKTOP_W = 1440;
+const DESKTOP_H = 900;
+
 const world = document.getElementById("world");
 const panels = Array.from(document.querySelectorAll(".panel"));
 const logo = document.getElementById("logoBtn");
@@ -26,7 +29,6 @@ const sayHiInstagramBtn = document.getElementById("sayHiInstagramBtn");
 const sayHiEmailBtn = document.getElementById("sayHiEmailBtn");
 
 /* Past Forward */
-const pfDesignFrame = document.getElementById("pfDesignFrame");
 const pfTeaser = document.getElementById("pfTeaser");
 const pfViewBtn = document.getElementById("pfViewBtn");
 const pfProject = document.getElementById("pfProject");
@@ -44,7 +46,6 @@ const pfBookPrevBtn = document.getElementById("pfBookPrevBtn");
 const pfBookNextBtn = document.getElementById("pfBookNextBtn");
 
 /* Tuborg */
-const tbDesignFrame = document.getElementById("tbDesignFrame");
 const tbTeaser = document.getElementById("tbTeaser");
 const tbViewBtn = document.getElementById("tbViewBtn");
 const tbProject = document.getElementById("tbProject");
@@ -53,7 +54,6 @@ const tbVpContent = document.getElementById("tbVpContent");
 const tbEnterBtn = document.getElementById("tbEnterBtn");
 
 /* Jewellery */
-const jwDesignFrame = document.getElementById("jwDesignFrame");
 const jwTeaser = document.getElementById("jwTeaser");
 
 let currentPanel = 0;
@@ -94,6 +94,13 @@ const TYPE_SPEED_JACQUARD = 85;
 const TYPE_SPEED_ONE_LINE = 65;
 const TYPE_SPEED_SUB = 62;
 const TYPE_ERASE_SPEED = 88;
+
+/* Whole-site desktop scale */
+function updateSiteScale(){
+  const scale = Math.min(window.innerWidth / DESKTOP_W, window.innerHeight / DESKTOP_H);
+  document.documentElement.style.setProperty("--site-scale", String(scale));
+  gsap.set(world, { x: -(DESKTOP_W * currentPanel) });
+}
 
 /* Global clouds slightly faster */
 gsap.to(".clouds", {
@@ -294,7 +301,6 @@ async function runTyping(panelIndex) {
   const panel = panels[panelIndex];
   if (!panel) return;
 
-  /* Say Hi panel custom type */
   if (panelIndex === 7) {
     if (panel.dataset.typed === "true") return;
     if (sayHiDefaultText) {
@@ -372,7 +378,7 @@ function goToPanel(nextIndex) {
   isAnimating = true;
   currentPanel = nextIndex;
 
-  const targetX = -window.innerWidth * currentPanel;
+  const targetX = -(DESKTOP_W * currentPanel);
 
   gsap.to(world, {
     x: targetX,
@@ -386,46 +392,6 @@ function goToPanel(nextIndex) {
     }
   });
 }
-
-/* ============================= */
-/* SCALE FRAMES                  */
-/* ============================= */
-function updateHomeScale(){
-  const fw = 1440;
-  const fh = 900;
-  const s = Math.min(window.innerWidth / fw, window.innerHeight / fh);
-  document.documentElement.style.setProperty("--home-scale", String(s));
-}
-
-function updatePfScale(){
-  if (!pfDesignFrame) return;
-  const s = Math.min(window.innerWidth / 1440, window.innerHeight / 900);
-  pfDesignFrame.style.setProperty("--pf-scale", String(s));
-}
-
-function updateTbScale(){
-  if (!tbDesignFrame) return;
-  const s = Math.min(window.innerWidth / 1440, window.innerHeight / 900);
-  tbDesignFrame.style.setProperty("--tb-scale", String(s));
-}
-
-function updateJwScale(){
-  if (!jwDesignFrame) return;
-  const s = Math.min(window.innerWidth / 1440, window.innerHeight / 900);
-  jwDesignFrame.style.setProperty("--jw-scale", String(s));
-}
-
-window.addEventListener("resize", () => {
-  updateHomeScale();
-  updatePfScale();
-  updateTbScale();
-  updateJwScale();
-});
-
-updateHomeScale();
-updatePfScale();
-updateTbScale();
-updateJwScale();
 
 /* ============================= */
 /* HOVER FALLBACKS               */
@@ -1089,7 +1055,8 @@ window.addEventListener("keydown", (e) => {
 
 /* Resize safety */
 window.addEventListener("resize", () => {
-  gsap.set(world, { x: -window.innerWidth * currentPanel });
+  updateSiteScale();
+  gsap.set(world, { x: -(DESKTOP_W * currentPanel) });
 });
 
 /* Optional images missing => hide */
@@ -1111,6 +1078,7 @@ normalizeSlides(pfVpContent, "data-pf-slide");
 normalizeSlides(tbVpContent, "data-tb-slide");
 
 /* Init */
+updateSiteScale();
 gsap.set(world, { x: 0 });
 runTyping(0);
 wheelLockedUntil = Date.now() + 600;
