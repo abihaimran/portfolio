@@ -54,7 +54,15 @@
       <!-- Layers -->
       <div class="layer sky"></div>
       <div class="layer clouds"></div>
-      <div class="layer grass"></div>
+      <div class="layer grass">
+        <img
+          class="grass-master"
+          id="grassMaster"
+          src="assets/grass_master.png"
+          alt=""
+          draggable="false"
+        />
+      </div>
 
       <!-- PANEL 1 -->
       <section class="panel" data-panel="0">
@@ -63,7 +71,7 @@
             <div class="line mono slot-1">
               <span class="chunk" data-text="Hello,"></span><span class="chunk" data-text=" you&#39;ve"></span>
             </div>
-            <div class="line jacquard big slot-2" data-text="Arrived."></div>
+            <div class="line jacquard big slot-2" data-text="Arrived"></div>
 
             <div class="line mono slot-3 intro-subtitle">
               <span id="introSubPrefix"></span><span id="introSubWrong"></span><span id="introSubMedium" class="intro-sub-medium"></span><span id="introSubSuffix"></span>
@@ -473,4 +481,3 @@ healing power of positive memories.</div>
   <script src="script.js"></script>
 </body>
 </html>
-
