@@ -1,13 +1,3 @@
-/**
- * ONLY CHANGES IN THIS ITERATION:
- * 1) Clouds move slightly faster.
- * 2) Type speeds are faster.
- * 3) Panel 1 gets subtitle typing with stroll -> scroll correction.
- * 4) Bobbing no longer restarts/jumps.
- * 5) Say Hi text now types, rectangle appears, hover text size matches, image positions fixed.
- * 6) Menu opacity adjusted in CSS only.
- */
-
 const world = document.getElementById("world");
 const panels = Array.from(document.querySelectorAll(".panel"));
 const logo = document.getElementById("logoBtn");
@@ -290,14 +280,14 @@ async function runIntroSubtitleSequence(){
   introSubMedium.textContent = "";
   introSubSuffix.textContent = "";
 
-  await sleep(340);
-  await appendType(introSubPrefix, "take a ", TYPE_SPEED_SUB);
+  await sleep(2000);
+  await appendType(introSubPrefix, "Take a ", TYPE_SPEED_SUB);
   await appendType(introSubWrong, "stroll", TYPE_SPEED_SUB);
-  await sleep(520);
+  await sleep(1500);
   await eraseSpan(introSubWrong, TYPE_ERASE_SPEED);
   await sleep(140);
   await appendType(introSubMedium, "scroll", TYPE_SPEED_SUB);
-  await appendType(introSubSuffix, " with me", TYPE_SPEED_SUB);
+  await appendType(introSubSuffix, " with me.", TYPE_SPEED_SUB);
 }
 
 async function runTyping(panelIndex) {
@@ -841,7 +831,7 @@ function showSayHiHover(){
   sayHiImg.classList.add("is-hover");
 
   gsap.to(sayHiDefaultText, { autoAlpha: 0, duration: 0.18, ease: "power2.out" });
-  gsap.to(sayHiRec, { autoAlpha: 1, duration: 0.22, ease: "power2.out" });
+  gsap.to(sayHiRec, { autoAlpha: 0, duration: 0.01, ease: "none" });
   gsap.to(sayHiHoverText, { autoAlpha: 1, duration: 0.22, ease: "power2.out" });
 }
 
@@ -858,7 +848,7 @@ function hideSayHiHover(){
   }
 
   gsap.to(sayHiDefaultText, { autoAlpha: 1, duration: 0.18, ease: "power2.out" });
-  gsap.to(sayHiRec, { autoAlpha: 0, duration: 0.18, ease: "power2.out" });
+  gsap.to(sayHiRec, { autoAlpha: 0, duration: 0.01, ease: "none" });
   gsap.to(sayHiHoverText, { autoAlpha: 0, duration: 0.18, ease: "power2.out" });
 }
 
