@@ -106,10 +106,44 @@ gsap.to(".clouds", {
 /* ============================= */
 /* CAMERA TILT + GRASS SLIDE     */
 /* ============================= */
-const HOME_BG = { y: -642.02, x: 0 };
-const PROJ_BG = { y: -532.02, x: -200 };
+const HOME_BG = { y: -720, x: 0 };
+const PROJ_BG = { y: -610, x: -200 };
 const GRASS_ENTER_EXTRA = 210;
 const GRASS_EXIT_EXTRA = 0;
+
+/* LOCK GRASS TO FIGMA FRAME */
+const FIGMA_FRAME_H = 900;
+const FIGMA_GRASS_Y = -642.02;
+const GRASS_TILT_DELTA_Y = PROJ_BG.y - HOME_BG.y;
+
+function getFrameTopOffset(){
+  return (window.innerHeight - FIGMA_FRAME_H) / 2;
+}
+
+function getGrassHomeY(){
+  return getFrameTopOffset() + FIGMA_GRASS_Y;
+}
+
+function getGrassProjectY(){
+  return getGrassHomeY() + GRASS_TILT_DELTA_Y;
+}
+
+function syncGrassToCurrentState(){
+  const grass = document.querySelector(".grass");
+  if (!grass) return;
+
+  if (pfState.active || tbState.active){
+    gsap.set(grass, {
+      backgroundPositionX: `${HOME_BG.x}px`,
+      backgroundPositionY: `${getGrassProjectY() + GRASS_ENTER_EXTRA}px`
+    });
+  } else {
+    gsap.set(grass, {
+      backgroundPositionX: `${HOME_BG.x}px`,
+      backgroundPositionY: `${getGrassHomeY() + GRASS_EXIT_EXTRA}px`
+    });
+  }
+}
 
 function tiltToProject(){
   const sky = document.querySelector(".sky");
@@ -133,7 +167,7 @@ function tiltToProject(){
 
   gsap.to(grass, {
     backgroundPositionX: `${HOME_BG.x}px`,
-    backgroundPositionY: `${PROJ_BG.y + GRASS_ENTER_EXTRA}px`,
+    backgroundPositionY: `${getGrassProjectY() + GRASS_ENTER_EXTRA}px`,
     opacity: 0,
     duration: 1.00,
     ease: "power3.inOut",
@@ -163,7 +197,7 @@ function tiltToHome(){
 
   gsap.to(grass, {
     backgroundPositionX: `${HOME_BG.x}px`,
-    backgroundPositionY: `${HOME_BG.y + GRASS_EXIT_EXTRA}px`,
+    backgroundPositionY: `${getGrassHomeY() + GRASS_EXIT_EXTRA}px`,
     opacity: 1,
     duration: 1.00,
     ease: "power3.inOut",
@@ -420,6 +454,7 @@ window.addEventListener("resize", () => {
   updatePfScale();
   updateTbScale();
   updateJwScale();
+  syncGrassToCurrentState();
 });
 
 updateHomeScale();
@@ -1090,6 +1125,7 @@ window.addEventListener("keydown", (e) => {
 /* Resize safety */
 window.addEventListener("resize", () => {
   gsap.set(world, { x: -window.innerWidth * currentPanel });
+  syncGrassToCurrentState();
 });
 
 /* Optional images missing => hide */
@@ -1115,6 +1151,7 @@ gsap.set(world, { x: 0 });
 runTyping(0);
 wheelLockedUntil = Date.now() + 600;
 tiltToHome();
+syncGrassToCurrentState();
 updateGlobalProgress();
 hideSayHiHover();
 closeSiteMenu();
