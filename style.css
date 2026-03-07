@@ -7,7 +7,7 @@
 
   --tile-w: 2691px;
   --tile-h: 1582px;
-  --tile-offset-y: -642.02px;
+  --tile-offset-y: -720px;
 
   --mono-size: 30px;
   --jacquard-size: 130px;
@@ -213,11 +213,19 @@ body{ overflow:hidden; background:#000; }
 }
 .grass{
   z-index:3;
-  background-image:url("assets/grass.png");
-  background-repeat:repeat-x;
-  background-size:var(--tile-w) var(--tile-h);
-  background-position:0px var(--tile-offset-y);
-  opacity:1;
+  overflow:hidden;
+}
+.grass-master{
+  position:absolute;
+  left:0;
+  top:0;
+  width:auto;
+  height:auto;
+  max-width:none;
+  user-select:none;
+  -webkit-user-drag:none;
+  pointer-events:none;
+  display:block;
 }
 
 /* Panels */
