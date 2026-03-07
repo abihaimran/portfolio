@@ -1,6 +1,7 @@
 const world = document.getElementById("world");
 const panels = Array.from(document.querySelectorAll(".panel"));
 const logo = document.getElementById("logoBtn");
+const grassMaster = document.getElementById("grassMaster");
 
 /* Global top progress */
 const topProgressFill = document.getElementById("topProgressFill");
@@ -95,6 +96,11 @@ const TYPE_SPEED_ONE_LINE = 65;
 const TYPE_SPEED_SUB = 62;
 const TYPE_ERASE_SPEED = 88;
 
+/* Grass master metrics */
+const GRASS_MASTER_NATIVE_W = 11520;
+const GRASS_MASTER_NATIVE_H = 1582;
+const GRASS_MASTER_HOME_Y = -642.02;
+
 /* Global clouds slightly faster */
 gsap.to(".clouds", {
   backgroundPositionX: "-2691px",
@@ -102,6 +108,35 @@ gsap.to(".clouds", {
   ease: "none",
   repeat: -1
 });
+
+function getGrassScale() {
+  return window.innerWidth / 1440;
+}
+
+function getGrassHomeTop() {
+  return GRASS_MASTER_HOME_Y * getGrassScale();
+}
+
+function getGrassProjectTop() {
+  return (PROJ_BG.y + GRASS_ENTER_EXTRA) * getGrassScale();
+}
+
+function updateGrassMasterLayout() {
+  if (!grassMaster) return;
+
+  const scale = getGrassScale();
+  grassMaster.style.width = `${GRASS_MASTER_NATIVE_W * scale}px`;
+  grassMaster.style.height = `${GRASS_MASTER_NATIVE_H * scale}px`;
+  grassMaster.style.left = "0px";
+
+  if (pfState.active || tbState.active) {
+    grassMaster.style.top = `${getGrassProjectTop()}px`;
+    grassMaster.style.opacity = "0";
+  } else {
+    grassMaster.style.top = `${getGrassHomeTop()}px`;
+    grassMaster.style.opacity = "1";
+  }
+}
 
 /* ============================= */
 /* CAMERA TILT + GRASS SLIDE     */
@@ -111,44 +146,9 @@ const PROJ_BG = { y: -610, x: -200 };
 const GRASS_ENTER_EXTRA = 210;
 const GRASS_EXIT_EXTRA = 0;
 
-/* LOCK GRASS TO FIGMA FRAME */
-const FIGMA_FRAME_H = 900;
-const FIGMA_GRASS_Y = -642.02;
-const GRASS_TILT_DELTA_Y = PROJ_BG.y - HOME_BG.y;
-
-function getFrameTopOffset(){
-  return (window.innerHeight - FIGMA_FRAME_H) / 2;
-}
-
-function getGrassHomeY(){
-  return getFrameTopOffset() + FIGMA_GRASS_Y;
-}
-
-function getGrassProjectY(){
-  return getGrassHomeY() + GRASS_TILT_DELTA_Y;
-}
-
-function syncGrassToCurrentState(){
-  const grass = document.querySelector(".grass");
-  if (!grass) return;
-
-  if (pfState.active || tbState.active){
-    gsap.set(grass, {
-      backgroundPositionX: `${HOME_BG.x}px`,
-      backgroundPositionY: `${getGrassProjectY() + GRASS_ENTER_EXTRA}px`
-    });
-  } else {
-    gsap.set(grass, {
-      backgroundPositionX: `${HOME_BG.x}px`,
-      backgroundPositionY: `${getGrassHomeY() + GRASS_EXIT_EXTRA}px`
-    });
-  }
-}
-
 function tiltToProject(){
   const sky = document.querySelector(".sky");
   const clouds = document.querySelector(".clouds");
-  const grass = document.querySelector(".grass");
 
   gsap.to(sky, {
     backgroundPositionX: `${PROJ_BG.x}px`,
@@ -165,20 +165,20 @@ function tiltToProject(){
     overwrite: false
   });
 
-  gsap.to(grass, {
-    backgroundPositionX: `${HOME_BG.x}px`,
-    backgroundPositionY: `${getGrassProjectY() + GRASS_ENTER_EXTRA}px`,
-    opacity: 0,
-    duration: 1.00,
-    ease: "power3.inOut",
-    overwrite: true
-  });
+  if (grassMaster) {
+    gsap.to(grassMaster, {
+      top: getGrassProjectTop(),
+      opacity: 0,
+      duration: 1.00,
+      ease: "power3.inOut",
+      overwrite: true
+    });
+  }
 }
 
 function tiltToHome(){
   const sky = document.querySelector(".sky");
   const clouds = document.querySelector(".clouds");
-  const grass = document.querySelector(".grass");
 
   gsap.to(sky, {
     backgroundPositionX: `${HOME_BG.x}px`,
@@ -195,14 +195,15 @@ function tiltToHome(){
     overwrite: false
   });
 
-  gsap.to(grass, {
-    backgroundPositionX: `${HOME_BG.x}px`,
-    backgroundPositionY: `${getGrassHomeY() + GRASS_EXIT_EXTRA}px`,
-    opacity: 1,
-    duration: 1.00,
-    ease: "power3.inOut",
-    overwrite: true
-  });
+  if (grassMaster) {
+    gsap.to(grassMaster, {
+      top: getGrassHomeTop(),
+      opacity: 1,
+      duration: 1.00,
+      ease: "power3.inOut",
+      overwrite: true
+    });
+  }
 }
 
 /* ============================= */
@@ -454,13 +455,15 @@ window.addEventListener("resize", () => {
   updatePfScale();
   updateTbScale();
   updateJwScale();
-  syncGrassToCurrentState();
+  updateGrassMasterLayout();
+  gsap.set(world, { x: -window.innerWidth * currentPanel });
 });
 
 updateHomeScale();
 updatePfScale();
 updateTbScale();
 updateJwScale();
+updateGrassMasterLayout();
 
 /* ============================= */
 /* HOVER FALLBACKS               */
@@ -624,17 +627,6 @@ pfProject.classList.remove("is-active");
 pfProject.classList.remove("is-book");
 pfProject.setAttribute("aria-hidden", "true");
 
-pfViewBtn?.addEventListener("click", (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  enterPfProject();
-});
-
-pfExitBtn?.addEventListener("click", (e) => {
-  e.preventDefault();
-  exitPfProject();
-});
-
 /* PF book */
 function hardHide(el){
   if (!el) return;
@@ -691,6 +683,17 @@ function exitBookMode(){
   pfWheelLockedUntil = Date.now() + 420;
   updateGlobalProgress();
 }
+
+pfViewBtn?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  enterPfProject();
+});
+
+pfExitBtn?.addEventListener("click", (e) => {
+  e.preventDefault();
+  exitPfProject();
+});
 
 pfReadBtn?.addEventListener("click", (e) => {
   e.preventDefault();
@@ -1122,12 +1125,6 @@ window.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft" || e.key === "ArrowUp") goToPanel(currentPanel - 1);
 });
 
-/* Resize safety */
-window.addEventListener("resize", () => {
-  gsap.set(world, { x: -window.innerWidth * currentPanel });
-  syncGrassToCurrentState();
-});
-
 /* Optional images missing => hide */
 Array.from(document.querySelectorAll('img[data-optional="true"]')).forEach(img => {
   img.addEventListener("error", () => {
@@ -1150,8 +1147,8 @@ normalizeSlides(tbVpContent, "data-tb-slide");
 gsap.set(world, { x: 0 });
 runTyping(0);
 wheelLockedUntil = Date.now() + 600;
+updateGrassMasterLayout();
 tiltToHome();
-syncGrassToCurrentState();
 updateGlobalProgress();
 hideSayHiHover();
 closeSiteMenu();
