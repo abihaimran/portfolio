@@ -1,5 +1,5 @@
-const DESKTOP_W = 1440;
-const DESKTOP_H = 900;
+const FRAME_W = 1440;
+const FRAME_H = 900;
 
 const world = document.getElementById("world");
 const panels = Array.from(document.querySelectorAll(".panel"));
@@ -29,6 +29,7 @@ const sayHiInstagramBtn = document.getElementById("sayHiInstagramBtn");
 const sayHiEmailBtn = document.getElementById("sayHiEmailBtn");
 
 /* Past Forward */
+const pfDesignFrame = document.getElementById("pfDesignFrame");
 const pfTeaser = document.getElementById("pfTeaser");
 const pfViewBtn = document.getElementById("pfViewBtn");
 const pfProject = document.getElementById("pfProject");
@@ -46,6 +47,7 @@ const pfBookPrevBtn = document.getElementById("pfBookPrevBtn");
 const pfBookNextBtn = document.getElementById("pfBookNextBtn");
 
 /* Tuborg */
+const tbDesignFrame = document.getElementById("tbDesignFrame");
 const tbTeaser = document.getElementById("tbTeaser");
 const tbViewBtn = document.getElementById("tbViewBtn");
 const tbProject = document.getElementById("tbProject");
@@ -54,6 +56,7 @@ const tbVpContent = document.getElementById("tbVpContent");
 const tbEnterBtn = document.getElementById("tbEnterBtn");
 
 /* Jewellery */
+const jwDesignFrame = document.getElementById("jwDesignFrame");
 const jwTeaser = document.getElementById("jwTeaser");
 
 let currentPanel = 0;
@@ -95,13 +98,6 @@ const TYPE_SPEED_ONE_LINE = 65;
 const TYPE_SPEED_SUB = 62;
 const TYPE_ERASE_SPEED = 88;
 
-/* Whole-site desktop scale */
-function updateSiteScale(){
-  const scale = Math.min(window.innerWidth / DESKTOP_W, window.innerHeight / DESKTOP_H);
-  document.documentElement.style.setProperty("--site-scale", String(scale));
-  gsap.set(world, { x: -(DESKTOP_W * currentPanel) });
-}
-
 /* Global clouds slightly faster */
 gsap.to(".clouds", {
   backgroundPositionX: "-2691px",
@@ -109,6 +105,21 @@ gsap.to(".clouds", {
   ease: "none",
   repeat: -1
 });
+
+/* ============================= */
+/* FIXED 1440x900 STAGE          */
+/* ============================= */
+function updateFixedStage() {
+  const scale = Math.min(window.innerWidth / FRAME_W, window.innerHeight / FRAME_H);
+  const stageWidth = FRAME_W * scale;
+  const stageHeight = FRAME_H * scale;
+  const left = (window.innerWidth - stageWidth) / 2;
+  const top = (window.innerHeight - stageHeight) / 2;
+
+  document.documentElement.style.setProperty("--stage-scale", String(scale));
+  document.documentElement.style.setProperty("--stage-left", `${left}px`);
+  document.documentElement.style.setProperty("--stage-top", `${top}px`);
+}
 
 /* ============================= */
 /* CAMERA TILT + GRASS SLIDE     */
@@ -270,7 +281,7 @@ function eraseSpan(el, speed) {
 
 function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
 
-/* no more restart-jump logic */
+/* no restart-jump logic */
 function ensureBobClass(elements){
   elements.forEach(el => {
     if (el && !el.classList.contains("bob-sync")) {
@@ -287,20 +298,21 @@ async function runIntroSubtitleSequence(){
   introSubMedium.textContent = "";
   introSubSuffix.textContent = "";
 
-  await sleep(2000);
+  await sleep(340);
   await appendType(introSubPrefix, "Take a ", TYPE_SPEED_SUB);
   await appendType(introSubWrong, "stroll", TYPE_SPEED_SUB);
-  await sleep(1500);
+  await sleep(520);
   await eraseSpan(introSubWrong, TYPE_ERASE_SPEED);
   await sleep(140);
   await appendType(introSubMedium, "scroll", TYPE_SPEED_SUB);
-  await appendType(introSubSuffix, " with me.", TYPE_SPEED_SUB);
+  await appendType(introSubSuffix, " with me", TYPE_SPEED_SUB);
 }
 
 async function runTyping(panelIndex) {
   const panel = panels[panelIndex];
   if (!panel) return;
 
+  /* Say Hi panel custom type */
   if (panelIndex === 7) {
     if (panel.dataset.typed === "true") return;
     if (sayHiDefaultText) {
@@ -378,7 +390,7 @@ function goToPanel(nextIndex) {
   isAnimating = true;
   currentPanel = nextIndex;
 
-  const targetX = -(DESKTOP_W * currentPanel);
+  const targetX = -FRAME_W * currentPanel;
 
   gsap.to(world, {
     x: targetX,
@@ -554,6 +566,11 @@ function exitPfProject(){
 pfProject.classList.remove("is-active");
 pfProject.classList.remove("is-book");
 pfProject.setAttribute("aria-hidden", "true");
+
+/* keep existing scale vars neutral */
+pfDesignFrame?.style.setProperty("--pf-scale", "1");
+tbDesignFrame?.style.setProperty("--tb-scale", "1");
+jwDesignFrame?.style.setProperty("--jw-scale", "1");
 
 pfViewBtn?.addEventListener("click", (e) => {
   e.preventDefault();
@@ -797,7 +814,7 @@ function showSayHiHover(){
   sayHiImg.classList.add("is-hover");
 
   gsap.to(sayHiDefaultText, { autoAlpha: 0, duration: 0.18, ease: "power2.out" });
-  gsap.to(sayHiRec, { autoAlpha: 0, duration: 0.01, ease: "none" });
+  gsap.to(sayHiRec, { autoAlpha: 1, duration: 0.22, ease: "power2.out" });
   gsap.to(sayHiHoverText, { autoAlpha: 1, duration: 0.22, ease: "power2.out" });
 }
 
@@ -814,7 +831,7 @@ function hideSayHiHover(){
   }
 
   gsap.to(sayHiDefaultText, { autoAlpha: 1, duration: 0.18, ease: "power2.out" });
-  gsap.to(sayHiRec, { autoAlpha: 0, duration: 0.01, ease: "none" });
+  gsap.to(sayHiRec, { autoAlpha: 0, duration: 0.18, ease: "power2.out" });
   gsap.to(sayHiHoverText, { autoAlpha: 0, duration: 0.18, ease: "power2.out" });
 }
 
@@ -1055,8 +1072,8 @@ window.addEventListener("keydown", (e) => {
 
 /* Resize safety */
 window.addEventListener("resize", () => {
-  updateSiteScale();
-  gsap.set(world, { x: -(DESKTOP_W * currentPanel) });
+  updateFixedStage();
+  gsap.set(world, { x: -FRAME_W * currentPanel });
 });
 
 /* Optional images missing => hide */
@@ -1078,7 +1095,7 @@ normalizeSlides(pfVpContent, "data-pf-slide");
 normalizeSlides(tbVpContent, "data-tb-slide");
 
 /* Init */
-updateSiteScale();
+updateFixedStage();
 gsap.set(world, { x: 0 });
 runTyping(0);
 wheelLockedUntil = Date.now() + 600;
