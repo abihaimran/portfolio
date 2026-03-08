@@ -221,7 +221,7 @@ body{ overflow:hidden; background:#000; }
 */
 .grass{
   z-index:3;
-  background-image:url("assets/grass_master.png");
+  background-image:url("assets/master_grass.png");
   background-repeat:no-repeat;
   background-size:6452px 556px;
   background-position:center bottom;
@@ -2367,3 +2367,4 @@ tiltToHome();
 updateGlobalProgress();
 hideSayHiHover();
 closeSiteMenu();
+
