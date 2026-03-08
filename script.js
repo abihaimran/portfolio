@@ -1,7 +1,7 @@
 const world = document.getElementById("world");
 const panels = Array.from(document.querySelectorAll(".panel"));
 const logo = document.getElementById("logoBtn");
-const grassMaster = document.getElementById("grassMaster");
+const frameGrassEls = Array.from(document.querySelectorAll(".frame-grass"));
 
 /* Global top progress */
 const topProgressFill = document.getElementById("topProgressFill");
@@ -96,10 +96,9 @@ const TYPE_SPEED_ONE_LINE = 65;
 const TYPE_SPEED_SUB = 62;
 const TYPE_ERASE_SPEED = 88;
 
-/* Grass master metrics */
-const GRASS_MASTER_NATIVE_W = 11520;
-const GRASS_MASTER_NATIVE_H = 1582;
-const GRASS_MASTER_HOME_Y = -642.02;
+/* Grass positions */
+const GRASS_HOME_TOP = -642.02;
+const GRASS_PROJECT_TOP = -432.02;
 
 /* Global clouds slightly faster */
 gsap.to(".clouds", {
@@ -109,35 +108,6 @@ gsap.to(".clouds", {
   repeat: -1
 });
 
-function getGrassScale() {
-  return window.innerWidth / 1440;
-}
-
-function getGrassHomeTop() {
-  return GRASS_MASTER_HOME_Y * getGrassScale();
-}
-
-function getGrassProjectTop() {
-  return (PROJ_BG.y + GRASS_ENTER_EXTRA) * getGrassScale();
-}
-
-function updateGrassMasterLayout() {
-  if (!grassMaster) return;
-
-  const scale = getGrassScale();
-  grassMaster.style.width = `${GRASS_MASTER_NATIVE_W * scale}px`;
-  grassMaster.style.height = `${GRASS_MASTER_NATIVE_H * scale}px`;
-  grassMaster.style.left = "0px";
-
-  if (pfState.active || tbState.active) {
-    grassMaster.style.top = `${getGrassProjectTop()}px`;
-    grassMaster.style.opacity = "0";
-  } else {
-    grassMaster.style.top = `${getGrassHomeTop()}px`;
-    grassMaster.style.opacity = "1";
-  }
-}
-
 /* ============================= */
 /* CAMERA TILT + GRASS SLIDE     */
 /* ============================= */
@@ -145,6 +115,15 @@ const HOME_BG = { y: -720, x: 0 };
 const PROJ_BG = { y: -610, x: -200 };
 const GRASS_ENTER_EXTRA = 210;
 const GRASS_EXIT_EXTRA = 0;
+
+function setGrassHomeStateImmediate(){
+  frameGrassEls.forEach((el) => {
+    gsap.set(el, {
+      top: GRASS_HOME_TOP,
+      opacity: 1
+    });
+  });
+}
 
 function tiltToProject(){
   const sky = document.querySelector(".sky");
@@ -165,15 +144,15 @@ function tiltToProject(){
     overwrite: false
   });
 
-  if (grassMaster) {
-    gsap.to(grassMaster, {
-      top: getGrassProjectTop(),
+  frameGrassEls.forEach((el) => {
+    gsap.to(el, {
+      top: GRASS_PROJECT_TOP,
       opacity: 0,
       duration: 1.00,
       ease: "power3.inOut",
       overwrite: true
     });
-  }
+  });
 }
 
 function tiltToHome(){
@@ -195,15 +174,15 @@ function tiltToHome(){
     overwrite: false
   });
 
-  if (grassMaster) {
-    gsap.to(grassMaster, {
-      top: getGrassHomeTop(),
+  frameGrassEls.forEach((el) => {
+    gsap.to(el, {
+      top: GRASS_HOME_TOP,
       opacity: 1,
       duration: 1.00,
       ease: "power3.inOut",
       overwrite: true
     });
-  }
+  });
 }
 
 /* ============================= */
@@ -329,7 +308,6 @@ async function runTyping(panelIndex) {
   const panel = panels[panelIndex];
   if (!panel) return;
 
-  /* Say Hi panel custom type */
   if (panelIndex === 7) {
     if (panel.dataset.typed === "true") return;
     if (sayHiDefaultText) {
@@ -455,7 +433,6 @@ window.addEventListener("resize", () => {
   updatePfScale();
   updateTbScale();
   updateJwScale();
-  updateGrassMasterLayout();
   gsap.set(world, { x: -window.innerWidth * currentPanel });
 });
 
@@ -463,7 +440,6 @@ updateHomeScale();
 updatePfScale();
 updateTbScale();
 updateJwScale();
-updateGrassMasterLayout();
 
 /* ============================= */
 /* HOVER FALLBACKS               */
@@ -627,6 +603,17 @@ pfProject.classList.remove("is-active");
 pfProject.classList.remove("is-book");
 pfProject.setAttribute("aria-hidden", "true");
 
+pfViewBtn?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  enterPfProject();
+});
+
+pfExitBtn?.addEventListener("click", (e) => {
+  e.preventDefault();
+  exitPfProject();
+});
+
 /* PF book */
 function hardHide(el){
   if (!el) return;
@@ -683,17 +670,6 @@ function exitBookMode(){
   pfWheelLockedUntil = Date.now() + 420;
   updateGlobalProgress();
 }
-
-pfViewBtn?.addEventListener("click", (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  enterPfProject();
-});
-
-pfExitBtn?.addEventListener("click", (e) => {
-  e.preventDefault();
-  exitPfProject();
-});
 
 pfReadBtn?.addEventListener("click", (e) => {
   e.preventDefault();
@@ -1125,6 +1101,11 @@ window.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft" || e.key === "ArrowUp") goToPanel(currentPanel - 1);
 });
 
+/* Resize safety */
+window.addEventListener("resize", () => {
+  gsap.set(world, { x: -window.innerWidth * currentPanel });
+});
+
 /* Optional images missing => hide */
 Array.from(document.querySelectorAll('img[data-optional="true"]')).forEach(img => {
   img.addEventListener("error", () => {
@@ -1145,9 +1126,9 @@ normalizeSlides(tbVpContent, "data-tb-slide");
 
 /* Init */
 gsap.set(world, { x: 0 });
+setGrassHomeStateImmediate();
 runTyping(0);
 wheelLockedUntil = Date.now() + 600;
-updateGrassMasterLayout();
 tiltToHome();
 updateGlobalProgress();
 hideSayHiHover();
