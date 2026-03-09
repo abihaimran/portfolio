@@ -1,7 +1,6 @@
 const world = document.getElementById("world");
 const panels = Array.from(document.querySelectorAll(".panel"));
 const logo = document.getElementById("logoBtn");
-const frameGrassEls = Array.from(document.querySelectorAll(".frame-grass"));
 
 /* Global top progress */
 const topProgressFill = document.getElementById("topProgressFill");
@@ -96,10 +95,6 @@ const TYPE_SPEED_ONE_LINE = 65;
 const TYPE_SPEED_SUB = 62;
 const TYPE_ERASE_SPEED = 88;
 
-/* Grass positions */
-const GRASS_HOME_TOP = -642.02;
-const GRASS_PROJECT_TOP = -432.02;
-
 /* Global clouds slightly faster */
 gsap.to(".clouds", {
   backgroundPositionX: "-2691px",
@@ -116,18 +111,10 @@ const PROJ_BG = { y: -610, x: -200 };
 const GRASS_ENTER_EXTRA = 210;
 const GRASS_EXIT_EXTRA = 0;
 
-function setGrassHomeStateImmediate(){
-  frameGrassEls.forEach((el) => {
-    gsap.set(el, {
-      top: GRASS_HOME_TOP,
-      opacity: 1
-    });
-  });
-}
-
 function tiltToProject(){
   const sky = document.querySelector(".sky");
   const clouds = document.querySelector(".clouds");
+  const grass = document.querySelector(".grass");
 
   gsap.to(sky, {
     backgroundPositionX: `${PROJ_BG.x}px`,
@@ -144,20 +131,20 @@ function tiltToProject(){
     overwrite: false
   });
 
-  frameGrassEls.forEach((el) => {
-    gsap.to(el, {
-      top: GRASS_PROJECT_TOP,
-      opacity: 0,
-      duration: 1.00,
-      ease: "power3.inOut",
-      overwrite: true
-    });
+  gsap.to(grass, {
+    backgroundPositionX: `${HOME_BG.x}px`,
+    backgroundPositionY: `${PROJ_BG.y + GRASS_ENTER_EXTRA}px`,
+    opacity: 0,
+    duration: 1.00,
+    ease: "power3.inOut",
+    overwrite: true
   });
 }
 
 function tiltToHome(){
   const sky = document.querySelector(".sky");
   const clouds = document.querySelector(".clouds");
+  const grass = document.querySelector(".grass");
 
   gsap.to(sky, {
     backgroundPositionX: `${HOME_BG.x}px`,
@@ -174,14 +161,13 @@ function tiltToHome(){
     overwrite: false
   });
 
-  frameGrassEls.forEach((el) => {
-    gsap.to(el, {
-      top: GRASS_HOME_TOP,
-      opacity: 1,
-      duration: 1.00,
-      ease: "power3.inOut",
-      overwrite: true
-    });
+  gsap.to(grass, {
+    backgroundPositionX: `${HOME_BG.x}px`,
+    backgroundPositionY: `${HOME_BG.y + GRASS_EXIT_EXTRA}px`,
+    opacity: 1,
+    duration: 1.00,
+    ease: "power3.inOut",
+    overwrite: true
   });
 }
 
@@ -308,6 +294,7 @@ async function runTyping(panelIndex) {
   const panel = panels[panelIndex];
   if (!panel) return;
 
+  /* Say Hi panel custom type */
   if (panelIndex === 7) {
     if (panel.dataset.typed === "true") return;
     if (sayHiDefaultText) {
@@ -433,7 +420,6 @@ window.addEventListener("resize", () => {
   updatePfScale();
   updateTbScale();
   updateJwScale();
-  gsap.set(world, { x: -window.innerWidth * currentPanel });
 });
 
 updateHomeScale();
@@ -1126,10 +1112,12 @@ normalizeSlides(tbVpContent, "data-tb-slide");
 
 /* Init */
 gsap.set(world, { x: 0 });
-setGrassHomeStateImmediate();
 runTyping(0);
 wheelLockedUntil = Date.now() + 600;
 tiltToHome();
 updateGlobalProgress();
 hideSayHiHover();
 closeSiteMenu();
+
+
+i sory, i the last message I accidneally gave you the wrong base code to work with. please ignore that instruction and follow this base code and this instruction. according to my figma, my grass png is always as y position -642.02 in the website (except for the screen tilt animation, do NOT touch the logic of that). i need you to ensure that it always stays locked here no matter what the size of the screen or window is please. see screenshot 1 for what was visible to my bf and screenshot 2 for what we are trying to lock in for all screen sizes always, whether its mac or pc. please please i need to ensure my potential employers and all viewers of my website see the website as i designed it in my figma, my whole career depends on this. do not create any weird viewing window, just ensure things
