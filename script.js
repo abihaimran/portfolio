@@ -1118,6 +1118,3 @@ tiltToHome();
 updateGlobalProgress();
 hideSayHiHover();
 closeSiteMenu();
-
-
-i sory, i the last message I accidneally gave you the wrong base code to work with. please ignore that instruction and follow this base code and this instruction. according to my figma, my grass png is always as y position -642.02 in the website (except for the screen tilt animation, do NOT touch the logic of that). i need you to ensure that it always stays locked here no matter what the size of the screen or window is please. see screenshot 1 for what was visible to my bf and screenshot 2 for what we are trying to lock in for all screen sizes always, whether its mac or pc. please please i need to ensure my potential employers and all viewers of my website see the website as i designed it in my figma, my whole career depends on this. do not create any weird viewing window, just ensure things
