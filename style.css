@@ -26,11 +26,6 @@
   --frame-w: 1440px;
   --frame-h: 900px;
 
-  --grass-img-w: 2691px;
-  --grass-img-h: 1582px;
-  --grass-home-top: -642.02px;
-  --grass-project-top: -432.02px;
-
   --pf-hit-x: 436px;
   --pf-hit-y: 118px;
   --pf-hit-w: 568px;
@@ -216,6 +211,14 @@ body{ overflow:hidden; background:#000; }
   background-position:0px var(--tile-offset-y);
   opacity:0.95;
 }
+.grass{
+  z-index:3;
+  background-image:url("assets/grass.png");
+  background-repeat:repeat-x;
+  background-size:var(--tile-w) var(--tile-h);
+  background-position:0px var(--tile-offset-y);
+  opacity:1;
+}
 
 /* Panels */
 .panel{
@@ -248,21 +251,6 @@ body{ overflow:hidden; background:#000; }
   transform-origin:center;
   overflow:hidden;
   pointer-events:auto;
-}
-
-/* Locked grass inside each frame */
-.frame-grass{
-  position:absolute;
-  left:0;
-  top:var(--grass-home-top);
-  width:var(--grass-img-w);
-  height:var(--grass-img-h);
-  object-fit:contain;
-  pointer-events:none;
-  user-select:none;
-  z-index:0;
-  opacity:1;
-  will-change:transform, opacity, top;
 }
 
 /* Intro text base */
@@ -306,7 +294,6 @@ body{ overflow:hidden; background:#000; }
   height:100%;
   text-align:center;
   color:var(--red);
-  z-index:2;
 }
 .intro-text-two .slot-1{
   position:absolute;
@@ -347,7 +334,6 @@ body{ overflow:hidden; background:#000; }
   justify-content:center;
   text-align:center;
   color:var(--red);
-  z-index:2;
 }
 .intro-text-design .design-line{
   white-space:pre-line;
@@ -361,7 +347,6 @@ body{ overflow:hidden; background:#000; }
   pointer-events:none;
   user-select:none;
   object-fit:contain;
-  z-index:2;
 }
 
 .home-asset-abiha{
@@ -401,7 +386,6 @@ body{ overflow:hidden; background:#000; }
   text-align:center;
   color:var(--red);
   font-family:"Roboto Mono", monospace;
-  z-index:2;
 }
 .portfolio-slide-title{
   font-size:30px;
@@ -423,7 +407,6 @@ body{ overflow:hidden; background:#000; }
   width:818.24px;
   height:721px;
   pointer-events:auto;
-  z-index:2;
 }
 
 .sayhi-rec{
@@ -505,7 +488,6 @@ body{ overflow:hidden; background:#000; }
   transform-origin:center;
   z-index:50;
   pointer-events:auto;
-  overflow:hidden;
 }
 
 .pf-teaser{
@@ -515,7 +497,6 @@ body{ overflow:hidden; background:#000; }
   width:var(--pf-hit-w);
   height:var(--pf-hit-h);
   pointer-events:auto;
-  z-index:3;
 }
 .pf-teaser img{
   pointer-events:none;
@@ -558,6 +539,7 @@ body{ overflow:hidden; background:#000; }
   pointer-events:auto !important;
 }
 
+/* Hide overlay instantly once we enter project */
 body.pf-mode .pf-overlay{
   opacity:0 !important;
   pointer-events:none !important;
@@ -634,7 +616,6 @@ body.pf-mode .pf-overlay{
   width:var(--pf-vp-w);
   height:var(--pf-vp-h);
   overflow:visible;
-  z-index:4;
 }
 
 .pf-viewport{
@@ -916,7 +897,6 @@ body.pf-mode .pf-overlay{
   transform-origin:center;
   z-index:50;
   pointer-events:auto;
-  overflow:hidden;
 }
 
 .tb-teaser{
@@ -926,7 +906,6 @@ body.pf-mode .pf-overlay{
   width:var(--tb-hit-w);
   height:var(--tb-hit-h);
   pointer-events:auto;
-  z-index:3;
 }
 .tb-teaser img{
   pointer-events:none;
@@ -1036,7 +1015,6 @@ body.tb-mode .tb-overlay{
   width:var(--tb-vp-w);
   height:var(--tb-vp-h);
   overflow:visible;
-  z-index:4;
 }
 
 .tb-viewport{
@@ -1146,7 +1124,6 @@ body.tb-mode .tb-overlay{
   transform-origin:center;
   z-index:50;
   pointer-events:auto;
-  overflow:hidden;
 }
 
 .jw-teaser{
@@ -1156,7 +1133,6 @@ body.tb-mode .tb-overlay{
   width:var(--jw-hit-w);
   height:var(--jw-hit-h);
   pointer-events:auto;
-  z-index:3;
 }
 .jw-teaser img{
   pointer-events:none;
