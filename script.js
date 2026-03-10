@@ -111,29 +111,44 @@ const PROJ_BG = { y: -610, x: -200 };
 const GRASS_ENTER_EXTRA = 210;
 const GRASS_EXIT_EXTRA = 0;
 
+function getSafeHomeBgY() {
+  const tileH = 1582;
+  const baseY = -720;
+  return Math.max(baseY, window.innerHeight - tileH);
+}
+
+function getSafeProjectBgY() {
+  const homeY = getSafeHomeBgY();
+  const originalDelta = PROJ_BG.y - HOME_BG.y;
+  return homeY + originalDelta;
+}
+
 function tiltToProject(){
   const sky = document.querySelector(".sky");
   const clouds = document.querySelector(".clouds");
   const grass = document.querySelector(".grass");
 
+  const safeProjY = getSafeProjectBgY();
+  const safeHomeX = HOME_BG.x;
+
   gsap.to(sky, {
     backgroundPositionX: `${PROJ_BG.x}px`,
-    backgroundPositionY: `${PROJ_BG.y}px`,
+    backgroundPositionY: `${safeProjY}px`,
     duration: 1.05,
     ease: "power3.inOut",
     overwrite: true
   });
 
   gsap.to(clouds, {
-    backgroundPositionY: `${PROJ_BG.y}px`,
+    backgroundPositionY: `${safeProjY}px`,
     duration: 1.05,
     ease: "power3.inOut",
     overwrite: false
   });
 
   gsap.to(grass, {
-    backgroundPositionX: `${HOME_BG.x}px`,
-    backgroundPositionY: `${PROJ_BG.y + GRASS_ENTER_EXTRA}px`,
+    backgroundPositionX: `${safeHomeX}px`,
+    backgroundPositionY: `${safeProjY + GRASS_ENTER_EXTRA}px`,
     opacity: 0,
     duration: 1.00,
     ease: "power3.inOut",
@@ -146,16 +161,18 @@ function tiltToHome(){
   const clouds = document.querySelector(".clouds");
   const grass = document.querySelector(".grass");
 
+  const safeHomeY = getSafeHomeBgY();
+
   gsap.to(sky, {
     backgroundPositionX: `${HOME_BG.x}px`,
-    backgroundPositionY: `${HOME_BG.y}px`,
+    backgroundPositionY: `${safeHomeY}px`,
     duration: 1.05,
     ease: "power3.inOut",
     overwrite: true
   });
 
   gsap.to(clouds, {
-    backgroundPositionY: `${HOME_BG.y}px`,
+    backgroundPositionY: `${safeHomeY}px`,
     duration: 1.05,
     ease: "power3.inOut",
     overwrite: false
@@ -163,7 +180,7 @@ function tiltToHome(){
 
   gsap.to(grass, {
     backgroundPositionX: `${HOME_BG.x}px`,
-    backgroundPositionY: `${HOME_BG.y + GRASS_EXIT_EXTRA}px`,
+    backgroundPositionY: `${safeHomeY + GRASS_EXIT_EXTRA}px`,
     opacity: 1,
     duration: 1.00,
     ease: "power3.inOut",
@@ -393,25 +410,25 @@ function goToPanel(nextIndex) {
 function updateHomeScale(){
   const fw = 1440;
   const fh = 900;
-  const s = Math.min(window.innerWidth / fw, window.innerHeight / fh);
+  const s = Math.min(window.innerWidth / fw, window.innerHeight / fh, 1);
   document.documentElement.style.setProperty("--home-scale", String(s));
 }
 
 function updatePfScale(){
   if (!pfDesignFrame) return;
-  const s = Math.min(window.innerWidth / 1440, window.innerHeight / 900);
+  const s = Math.min(window.innerWidth / 1440, window.innerHeight / 900, 1);
   pfDesignFrame.style.setProperty("--pf-scale", String(s));
 }
 
 function updateTbScale(){
   if (!tbDesignFrame) return;
-  const s = Math.min(window.innerWidth / 1440, window.innerHeight / 900);
+  const s = Math.min(window.innerWidth / 1440, window.innerHeight / 900, 1);
   tbDesignFrame.style.setProperty("--tb-scale", String(s));
 }
 
 function updateJwScale(){
   if (!jwDesignFrame) return;
-  const s = Math.min(window.innerWidth / 1440, window.innerHeight / 900);
+  const s = Math.min(window.innerWidth / 1440, window.innerHeight / 900, 1);
   jwDesignFrame.style.setProperty("--jw-scale", String(s));
 }
 
@@ -1090,6 +1107,17 @@ window.addEventListener("keydown", (e) => {
 /* Resize safety */
 window.addEventListener("resize", () => {
   gsap.set(world, { x: -window.innerWidth * currentPanel });
+
+  updateHomeScale();
+  updatePfScale();
+  updateTbScale();
+  updateJwScale();
+
+  if (pfState.active || tbState.active) {
+    tiltToProject();
+  } else {
+    tiltToHome();
+  }
 });
 
 /* Optional images missing => hide */
