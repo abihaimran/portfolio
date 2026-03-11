@@ -110,44 +110,6 @@ body{ overflow:hidden; background:#000; }
   cursor:pointer;
 }
 
-/* Audio toggle */
-.audio-toggle{
-  position:fixed;
-  left:var(--ui-pad);
-  bottom:var(--ui-pad);
-  display:flex;
-  align-items:center;
-  gap:7px;
-  min-height:38px;
-  padding:0 12px;
-  border-radius:999px;
-  background:rgba(255,255,255,0.15);
-  border:2px solid rgba(255,255,255,0.85);
-  color:rgba(255,255,255,0.95);
-  font-family:"Roboto Mono", monospace;
-  font-size:12px;
-  font-weight:300;
-  cursor:pointer;
-  z-index:16000;
-  transition:color 180ms ease, border-color 180ms ease, background 180ms ease;
-}
-.audio-toggle:hover,
-.audio-toggle:focus-visible{
-  color:var(--red);
-  border-color:var(--red);
-  background:rgba(255,255,255,0.15);
-  outline:none;
-}
-.audio-toggle-icon{
-  font-size:12px;
-  line-height:1;
-}
-.audio-toggle-label{
-  font-size:12px;
-  font-weight:300;
-  line-height:1;
-}
-
 /* Menu */
 .site-menu{
   position:fixed;
@@ -253,8 +215,8 @@ body{ overflow:hidden; background:#000; }
   z-index:3;
   background-image:url("assets/grass.png");
   background-repeat:repeat-x;
-  background-size:2691px 1582.01px;
-  background-position:0px calc(100vh - 1582.01px + 40px);
+  background-size:1614.6px 949.206px;
+  background-position:0px calc(100vh - 949.206px + 24px);
   opacity:1;
 }
 
@@ -582,7 +544,6 @@ body{ overflow:hidden; background:#000; }
   pointer-events:auto !important;
 }
 
-/* Hide overlay instantly once we enter project */
 body.pf-mode .pf-overlay{
   opacity:0 !important;
   pointer-events:none !important;
@@ -1276,13 +1237,4 @@ img[data-optional="true"]{ display:block; }
   }
 
   .logo{ width:34px; }
-
-  .audio-toggle{
-    min-height:34px;
-    padding:0 10px;
-    font-size:11px;
-    gap:6px;
-  }
-  .audio-toggle-icon{ font-size:11px; }
-  .audio-toggle-label{ font-size:11px; }
 }
