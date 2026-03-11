@@ -117,15 +117,15 @@ body{ overflow:hidden; background:#000; }
   bottom:var(--ui-pad);
   display:flex;
   align-items:center;
-  gap:10px;
-  min-height:46px;
-  padding:0 18px;
+  gap:8px;
+  min-height:42px;
+  padding:0 14px;
   border-radius:999px;
   background:rgba(255,255,255,0.15);
   border:2px solid rgba(255,255,255,0.85);
   color:rgba(255,255,255,0.95);
   font-family:"Roboto Mono", monospace;
-  font-size:14px;
+  font-size:13px;
   font-weight:300;
   cursor:pointer;
   z-index:16000;
@@ -139,11 +139,11 @@ body{ overflow:hidden; background:#000; }
   outline:none;
 }
 .audio-toggle-icon{
-  font-size:14px;
+  font-size:13px;
   line-height:1;
 }
 .audio-toggle-label{
-  font-size:14px;
+  font-size:13px;
   font-weight:300;
   line-height:1;
 }
@@ -253,8 +253,8 @@ body{ overflow:hidden; background:#000; }
   z-index:3;
   background-image:url("assets/grass.png");
   background-repeat:repeat-x;
-  background-size:2245px 1320px;
-  background-position:0px calc(100vh - 1320px + 40px);
+  background-size:2691px 1582.01px;
+  background-position:0px calc(100vh - 1582.01px + 40px);
   opacity:1;
 }
 
@@ -1273,11 +1273,11 @@ img[data-optional="true"]{ display:block; }
   .logo{ width:34px; }
 
   .audio-toggle{
-    min-height:42px;
-    padding:0 14px;
-    font-size:13px;
-    gap:8px;
+    min-height:38px;
+    padding:0 12px;
+    font-size:12px;
+    gap:7px;
   }
-  .audio-toggle-icon{ font-size:13px; }
-  .audio-toggle-label{ font-size:13px; }
+  .audio-toggle-icon{ font-size:12px; }
+  .audio-toggle-label{ font-size:12px; }
 }
