@@ -117,15 +117,15 @@ body{ overflow:hidden; background:#000; }
   bottom:var(--ui-pad);
   display:flex;
   align-items:center;
-  gap:8px;
-  min-height:42px;
-  padding:0 14px;
+  gap:7px;
+  min-height:38px;
+  padding:0 12px;
   border-radius:999px;
   background:rgba(255,255,255,0.15);
   border:2px solid rgba(255,255,255,0.85);
   color:rgba(255,255,255,0.95);
   font-family:"Roboto Mono", monospace;
-  font-size:13px;
+  font-size:12px;
   font-weight:300;
   cursor:pointer;
   z-index:16000;
@@ -139,11 +139,11 @@ body{ overflow:hidden; background:#000; }
   outline:none;
 }
 .audio-toggle-icon{
-  font-size:13px;
+  font-size:12px;
   line-height:1;
 }
 .audio-toggle-label{
-  font-size:13px;
+  font-size:12px;
   font-weight:300;
   line-height:1;
 }
@@ -282,18 +282,19 @@ body{ overflow:hidden; background:#000; }
 .home-design-frame{
   position:absolute;
   left:50%;
-  top:50%;
+  top:auto;
+  bottom:0;
   width:var(--frame-w);
   height:var(--frame-h);
-  transform:translate(-50%, -50%) scale(var(--home-scale, 1));
-  transform-origin:center;
+  transform:translateX(-50%);
+  transform-origin:center bottom;
   overflow:hidden;
   pointer-events:auto;
 }
 
 /* Intro text base */
 .textblock{
-  width:min(1100px, calc(100vw - 120px));
+  width:1100px;
   text-align:center;
   color:var(--red);
 }
@@ -392,24 +393,28 @@ body{ overflow:hidden; background:#000; }
   top:498px;
   width:352px;
   height:452px;
+  transform-origin:center bottom;
 }
 .home-asset-design{
   left:111px;
   top:460px;
   width:1219px;
   height:412px;
+  transform-origin:center bottom;
 }
 .home-asset-portfolio{
   left:537px;
   top:501px;
   width:366px;
   height:366px;
+  transform-origin:center bottom;
 }
 .home-asset-sayhi{
   left:0;
   top:61px;
   width:818.24px;
   height:656px;
+  transform-origin:center bottom;
 }
 .home-asset-sayhi.is-hover{
   top:65px;
@@ -1273,11 +1278,11 @@ img[data-optional="true"]{ display:block; }
   .logo{ width:34px; }
 
   .audio-toggle{
-    min-height:38px;
-    padding:0 12px;
-    font-size:12px;
-    gap:7px;
+    min-height:34px;
+    padding:0 10px;
+    font-size:11px;
+    gap:6px;
   }
-  .audio-toggle-icon{ font-size:12px; }
-  .audio-toggle-label{ font-size:12px; }
+  .audio-toggle-icon{ font-size:11px; }
+  .audio-toggle-label{ font-size:11px; }
 }
