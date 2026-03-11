@@ -56,6 +56,9 @@ const tbEnterBtn = document.getElementById("tbEnterBtn");
 const jwDesignFrame = document.getElementById("jwDesignFrame");
 const jwTeaser = document.getElementById("jwTeaser");
 
+/* Home frames */
+const homeDesignFrames = Array.from(document.querySelectorAll(".home-design-frame"));
+
 let currentPanel = 0;
 let isAnimating = false;
 
@@ -110,17 +113,16 @@ const HOME_BG = { y: -720, x: 0 };
 const PROJ_BG = { y: -610, x: -200 };
 const GRASS_ENTER_EXTRA = 210;
 const GRASS_EXIT_EXTRA = 0;
+const TILE_H = 1582;
 
+/* Keep grass locked to bottom edge of viewport */
 function getSafeHomeBgY() {
-  const tileH = 1582;
-  const baseY = -720;
-  return Math.max(baseY, window.innerHeight - tileH);
+  return window.innerHeight - TILE_H;
 }
 
 function getSafeProjectBgY() {
-  const homeY = getSafeHomeBgY();
   const originalDelta = PROJ_BG.y - HOME_BG.y;
-  return homeY + originalDelta;
+  return getSafeHomeBgY() + originalDelta;
 }
 
 function tiltToProject(){
@@ -129,7 +131,6 @@ function tiltToProject(){
   const grass = document.querySelector(".grass");
 
   const safeProjY = getSafeProjectBgY();
-  const safeHomeX = HOME_BG.x;
 
   gsap.to(sky, {
     backgroundPositionX: `${PROJ_BG.x}px`,
@@ -147,7 +148,7 @@ function tiltToProject(){
   });
 
   gsap.to(grass, {
-    backgroundPositionX: `${safeHomeX}px`,
+    backgroundPositionX: `${HOME_BG.x}px`,
     backgroundPositionY: `${safeProjY + GRASS_ENTER_EXTRA}px`,
     opacity: 0,
     duration: 1.00,
@@ -405,15 +406,25 @@ function goToPanel(nextIndex) {
 }
 
 /* ============================= */
-/* SCALE FRAMES                  */
+/* SCALE / LOCK FRAMES           */
 /* ============================= */
-function updateHomeScale(){
-  const fw = 1440;
-  const fh = 900;
-  const s = Math.min(window.innerWidth / fw, window.innerHeight / fh, 1);
-  document.documentElement.style.setProperty("--home-scale", String(s));
+
+/* Home panels must stay fixed size and fixed bottom alignment */
+function lockHomeFrames(){
+  document.documentElement.style.setProperty("--home-scale", "1");
+
+  homeDesignFrames.forEach(frame => {
+    frame.style.width = "1440px";
+    frame.style.height = "900px";
+    frame.style.left = "50%";
+    frame.style.top = "auto";
+    frame.style.bottom = "0px";
+    frame.style.transform = "translateX(-50%)";
+    frame.style.transformOrigin = "center bottom";
+  });
 }
 
+/* Keep project frames as before */
 function updatePfScale(){
   if (!pfDesignFrame) return;
   const s = Math.min(window.innerWidth / 1440, window.innerHeight / 900, 1);
@@ -432,14 +443,7 @@ function updateJwScale(){
   jwDesignFrame.style.setProperty("--jw-scale", String(s));
 }
 
-window.addEventListener("resize", () => {
-  updateHomeScale();
-  updatePfScale();
-  updateTbScale();
-  updateJwScale();
-});
-
-updateHomeScale();
+lockHomeFrames();
 updatePfScale();
 updateTbScale();
 updateJwScale();
@@ -1108,7 +1112,7 @@ window.addEventListener("keydown", (e) => {
 window.addEventListener("resize", () => {
   gsap.set(world, { x: -window.innerWidth * currentPanel });
 
-  updateHomeScale();
+  lockHomeFrames();
   updatePfScale();
   updateTbScale();
   updateJwScale();
@@ -1140,6 +1144,7 @@ normalizeSlides(tbVpContent, "data-tb-slide");
 
 /* Init */
 gsap.set(world, { x: 0 });
+lockHomeFrames();
 runTyping(0);
 wheelLockedUntil = Date.now() + 600;
 tiltToHome();
