@@ -135,16 +135,16 @@ async function toggleAudio() {
   try {
     if (bgAudio.muted) {
       bgAudio.muted = false;
-      const playAttempt = bgAudio.play();
-      if (playAttempt && typeof playAttempt.then === "function") {
-        await playAttempt;
+      const playPromise = bgAudio.play();
+      if (playPromise && typeof playPromise.then === "function") {
+        await playPromise;
       }
     } else {
       bgAudio.muted = true;
     }
-  } catch (err) {
+  } catch (error) {
     bgAudio.muted = true;
-    console.error("Audio toggle failed:", err);
+    console.error("Audio playback failed:", error);
   }
 
   updateAudioUI();
@@ -152,8 +152,8 @@ async function toggleAudio() {
 
 if (bgAudio) {
   bgAudio.muted = true;
-  bgAudio.preload = "auto";
   bgAudio.loop = true;
+  bgAudio.preload = "auto";
 }
 
 audioToggleBtn?.addEventListener("click", async (e) => {
@@ -169,7 +169,7 @@ const HOME_BG = { y: -720, x: 0 };
 const PROJ_BG = { y: -610, x: -200 };
 const GRASS_ENTER_EXTRA = 210;
 const GRASS_EXIT_EXTRA = 0;
-const GRASS_TILE_H = 1320;
+const GRASS_TILE_H = 1582.01;
 const GRASS_HOME_BOTTOM_OVERFLOW = 40;
 
 function getGrassHomeBgY() {
@@ -337,7 +337,6 @@ function eraseSpan(el, speed) {
 
 function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
 
-/* no more restart-jump logic */
 function ensureBobClass(elements){
   elements.forEach(el => {
     if (el && !el.classList.contains("bob-sync")) {
@@ -463,8 +462,8 @@ function goToPanel(nextIndex) {
 /* ============================= */
 /* SCALE / LOCK FRAMES           */
 /* ============================= */
-function lockHomeFrames(){
-  document.documentElement.style.setProperty("--home-scale", "1");
+function updateHomeScale(){
+  const s = Math.min(window.innerWidth / 1440, window.innerHeight / 900, 1);
 
   homeDesignFrames.forEach(frame => {
     frame.style.width = "1440px";
@@ -472,7 +471,7 @@ function lockHomeFrames(){
     frame.style.left = "50%";
     frame.style.top = "auto";
     frame.style.bottom = "0px";
-    frame.style.transform = "translateX(-50%)";
+    frame.style.transform = `translateX(-50%) scale(${s})`;
     frame.style.transformOrigin = "center bottom";
   });
 }
@@ -495,7 +494,7 @@ function updateJwScale(){
   jwDesignFrame.style.setProperty("--jw-scale", String(s));
 }
 
-lockHomeFrames();
+updateHomeScale();
 updatePfScale();
 updateTbScale();
 updateJwScale();
@@ -1180,7 +1179,7 @@ window.addEventListener("keydown", (e) => {
 window.addEventListener("resize", () => {
   gsap.set(world, { x: -window.innerWidth * currentPanel });
 
-  lockHomeFrames();
+  updateHomeScale();
   updatePfScale();
   updateTbScale();
   updateJwScale();
@@ -1212,7 +1211,7 @@ normalizeSlides(tbVpContent, "data-tb-slide");
 
 /* Init */
 gsap.set(world, { x: 0 });
-lockHomeFrames();
+updateHomeScale();
 runTyping(0);
 wheelLockedUntil = Date.now() + 600;
 tiltToHome();
