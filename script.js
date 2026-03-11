@@ -119,12 +119,12 @@ function updateAudioUI() {
   if (!audioToggleBtn || !audioToggleIcon || !audioToggleLabel || !bgAudio) return;
 
   if (bgAudio.muted) {
-    audioToggleIcon.textContent = "🔇";
-    audioToggleLabel.textContent = "Click to unmute";
+    audioToggleIcon.textContent = "🔊";
+    audioToggleLabel.textContent = "Click to unmute audio";
     audioToggleBtn.setAttribute("aria-label", "Unmute website sound");
   } else {
-    audioToggleIcon.textContent = "🔊";
-    audioToggleLabel.textContent = "Mute sound";
+    audioToggleIcon.textContent = "🔇";
+    audioToggleLabel.textContent = "Click to mute audio";
     audioToggleBtn.setAttribute("aria-label", "Mute website sound");
   }
 }
@@ -135,28 +135,25 @@ async function toggleAudio() {
   try {
     if (bgAudio.muted) {
       bgAudio.muted = false;
-      await bgAudio.play();
+      const playAttempt = bgAudio.play();
+      if (playAttempt && typeof playAttempt.then === "function") {
+        await playAttempt;
+      }
     } else {
       bgAudio.muted = true;
     }
-  } catch {
+  } catch (err) {
     bgAudio.muted = true;
+    console.error("Audio toggle failed:", err);
   }
 
-function updateAudioUI() {
+  updateAudioUI();
+}
 
-  if (!audioToggleBtn || !audioToggleIcon || !audioToggleLabel || !bgAudio) return;
-
-  if (bgAudio.muted) {
-    audioToggleIcon.textContent = "🔊";
-    audioToggleLabel.textContent = "Click to unmute audio";
-    audioToggleBtn.setAttribute("aria-label", "Unmute website sound");
-  } else {
-    audioToggleIcon.textContent = "🔇";
-    audioToggleLabel.textContent = "Click to mute audio";
-    audioToggleBtn.setAttribute("aria-label", "Mute website sound");
-  }
-
+if (bgAudio) {
+  bgAudio.muted = true;
+  bgAudio.preload = "auto";
+  bgAudio.loop = true;
 }
 
 audioToggleBtn?.addEventListener("click", async (e) => {
@@ -172,7 +169,7 @@ const HOME_BG = { y: -720, x: 0 };
 const PROJ_BG = { y: -610, x: -200 };
 const GRASS_ENTER_EXTRA = 210;
 const GRASS_EXIT_EXTRA = 0;
-const GRASS_TILE_H = 1439.84;
+const GRASS_TILE_H = 1320;
 const GRASS_HOME_BOTTOM_OVERFLOW = 40;
 
 function getGrassHomeBgY() {
@@ -371,7 +368,6 @@ async function runTyping(panelIndex) {
   const panel = panels[panelIndex];
   if (!panel) return;
 
-  /* Say Hi panel custom type */
   if (panelIndex === 7) {
     if (panel.dataset.typed === "true") return;
     if (sayHiDefaultText) {
@@ -481,7 +477,6 @@ function lockHomeFrames(){
   });
 }
 
-/* Keep project frames as before */
 function updatePfScale(){
   if (!pfDesignFrame) return;
   const s = Math.min(window.innerWidth / 1440, window.innerHeight / 900, 1);
@@ -1225,5 +1220,3 @@ updateGlobalProgress();
 hideSayHiHover();
 closeSiteMenu();
 updateAudioUI();
-
-
