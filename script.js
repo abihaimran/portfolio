@@ -143,12 +143,20 @@ async function toggleAudio() {
     bgAudio.muted = true;
   }
 
-  updateAudioUI();
-}
+function updateAudioUI() {
 
-if (bgAudio) {
-  bgAudio.volume = 1;
-  bgAudio.muted = true;
+  if (!audioToggleBtn || !audioToggleIcon || !audioToggleLabel || !bgAudio) return;
+
+  if (bgAudio.muted) {
+    audioToggleIcon.textContent = "🔊";
+    audioToggleLabel.textContent = "Click to unmute audio";
+    audioToggleBtn.setAttribute("aria-label", "Unmute website sound");
+  } else {
+    audioToggleIcon.textContent = "🔇";
+    audioToggleLabel.textContent = "Click to mute audio";
+    audioToggleBtn.setAttribute("aria-label", "Mute website sound");
+  }
+
 }
 
 audioToggleBtn?.addEventListener("click", async (e) => {
@@ -1217,4 +1225,5 @@ updateGlobalProgress();
 hideSayHiHover();
 closeSiteMenu();
 updateAudioUI();
+
 
