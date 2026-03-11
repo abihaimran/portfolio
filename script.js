@@ -5,6 +5,12 @@ const logo = document.getElementById("logoBtn");
 /* Global top progress */
 const topProgressFill = document.getElementById("topProgressFill");
 
+/* Audio */
+const bgAudio = document.getElementById("bgAudio");
+const audioToggleBtn = document.getElementById("audioToggleBtn");
+const audioToggleIcon = document.getElementById("audioToggleIcon");
+const audioToggleLabel = document.getElementById("audioToggleLabel");
+
 /* Menu */
 const siteMenu = document.getElementById("siteMenu");
 const siteMenuClose = document.getElementById("siteMenuClose");
@@ -107,22 +113,67 @@ gsap.to(".clouds", {
 });
 
 /* ============================= */
+/* AUDIO                         */
+/* ============================= */
+function updateAudioUI() {
+  if (!audioToggleBtn || !audioToggleIcon || !audioToggleLabel || !bgAudio) return;
+
+  if (bgAudio.muted) {
+    audioToggleIcon.textContent = "🔇";
+    audioToggleLabel.textContent = "Click to unmute";
+    audioToggleBtn.setAttribute("aria-label", "Unmute website sound");
+  } else {
+    audioToggleIcon.textContent = "🔊";
+    audioToggleLabel.textContent = "Mute sound";
+    audioToggleBtn.setAttribute("aria-label", "Mute website sound");
+  }
+}
+
+async function toggleAudio() {
+  if (!bgAudio) return;
+
+  try {
+    if (bgAudio.muted) {
+      bgAudio.muted = false;
+      await bgAudio.play();
+    } else {
+      bgAudio.muted = true;
+    }
+  } catch {
+    bgAudio.muted = true;
+  }
+
+  updateAudioUI();
+}
+
+if (bgAudio) {
+  bgAudio.volume = 1;
+  bgAudio.muted = true;
+}
+
+audioToggleBtn?.addEventListener("click", async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  await toggleAudio();
+});
+
+/* ============================= */
 /* CAMERA TILT + GRASS SLIDE     */
 /* ============================= */
 const HOME_BG = { y: -720, x: 0 };
 const PROJ_BG = { y: -610, x: -200 };
 const GRASS_ENTER_EXTRA = 210;
 const GRASS_EXIT_EXTRA = 0;
-const TILE_H = 1582;
+const GRASS_TILE_H = 1582.01;
+const GRASS_HOME_BOTTOM_OVERFLOW = 40;
 
-/* Keep grass locked to bottom edge of viewport */
-function getSafeHomeBgY() {
-  return window.innerHeight - TILE_H;
+function getGrassHomeBgY() {
+  return window.innerHeight - GRASS_TILE_H + GRASS_HOME_BOTTOM_OVERFLOW;
 }
 
-function getSafeProjectBgY() {
+function getGrassProjectBgY() {
   const originalDelta = PROJ_BG.y - HOME_BG.y;
-  return getSafeHomeBgY() + originalDelta;
+  return getGrassHomeBgY() + originalDelta;
 }
 
 function tiltToProject(){
@@ -130,18 +181,18 @@ function tiltToProject(){
   const clouds = document.querySelector(".clouds");
   const grass = document.querySelector(".grass");
 
-  const safeProjY = getSafeProjectBgY();
+  const grassProjY = getGrassProjectBgY();
 
   gsap.to(sky, {
     backgroundPositionX: `${PROJ_BG.x}px`,
-    backgroundPositionY: `${safeProjY}px`,
+    backgroundPositionY: `${PROJ_BG.y}px`,
     duration: 1.05,
     ease: "power3.inOut",
     overwrite: true
   });
 
   gsap.to(clouds, {
-    backgroundPositionY: `${safeProjY}px`,
+    backgroundPositionY: `${PROJ_BG.y}px`,
     duration: 1.05,
     ease: "power3.inOut",
     overwrite: false
@@ -149,7 +200,7 @@ function tiltToProject(){
 
   gsap.to(grass, {
     backgroundPositionX: `${HOME_BG.x}px`,
-    backgroundPositionY: `${safeProjY + GRASS_ENTER_EXTRA}px`,
+    backgroundPositionY: `${grassProjY + GRASS_ENTER_EXTRA}px`,
     opacity: 0,
     duration: 1.00,
     ease: "power3.inOut",
@@ -162,18 +213,18 @@ function tiltToHome(){
   const clouds = document.querySelector(".clouds");
   const grass = document.querySelector(".grass");
 
-  const safeHomeY = getSafeHomeBgY();
+  const grassHomeY = getGrassHomeBgY();
 
   gsap.to(sky, {
     backgroundPositionX: `${HOME_BG.x}px`,
-    backgroundPositionY: `${safeHomeY}px`,
+    backgroundPositionY: `${HOME_BG.y}px`,
     duration: 1.05,
     ease: "power3.inOut",
     overwrite: true
   });
 
   gsap.to(clouds, {
-    backgroundPositionY: `${safeHomeY}px`,
+    backgroundPositionY: `${HOME_BG.y}px`,
     duration: 1.05,
     ease: "power3.inOut",
     overwrite: false
@@ -181,7 +232,7 @@ function tiltToHome(){
 
   gsap.to(grass, {
     backgroundPositionX: `${HOME_BG.x}px`,
-    backgroundPositionY: `${safeHomeY + GRASS_EXIT_EXTRA}px`,
+    backgroundPositionY: `${grassHomeY + GRASS_EXIT_EXTRA}px`,
     opacity: 1,
     duration: 1.00,
     ease: "power3.inOut",
@@ -408,8 +459,6 @@ function goToPanel(nextIndex) {
 /* ============================= */
 /* SCALE / LOCK FRAMES           */
 /* ============================= */
-
-/* Home panels must stay fixed size and fixed bottom alignment */
 function lockHomeFrames(){
   document.documentElement.style.setProperty("--home-scale", "1");
 
@@ -640,8 +689,15 @@ function setBookNavVisibility(){
   if (pfBook.page <= 1) hardHide(pfBookPrevBtn);
   else hardShow(pfBookPrevBtn);
 
-  if (pfBook.page >= pfBook.total) hardHide(pfBookNextBtn);
-  else hardShow(pfBookNextBtn);
+  hardShow(pfBookNextBtn);
+
+  if (pfBook.page >= pfBook.total) {
+    pfBookNextBtn.textContent = "Exit";
+    pfBookNextBtn.setAttribute("aria-label", "Exit book");
+  } else {
+    pfBookNextBtn.textContent = "Next";
+    pfBookNextBtn.setAttribute("aria-label", "Next page");
+  }
 }
 
 function setBookPage(page){
@@ -703,6 +759,12 @@ pfBookNextBtn?.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
   if (!pfBook.active) return;
+
+  if (pfBook.page >= pfBook.total) {
+    exitBookMode();
+    return;
+  }
+
   setBookPage(pfBook.page + 1);
   pfWheelLockedUntil = Date.now() + 240;
 });
@@ -711,7 +773,10 @@ function pfStep(dir){
   if (!pfState.active) return;
 
   if (pfBook.active){
-    if (dir > 0) setBookPage(pfBook.page + 1);
+    if (dir > 0) {
+      if (pfBook.page >= pfBook.total) return;
+      setBookPage(pfBook.page + 1);
+    }
     if (dir < 0) setBookPage(pfBook.page - 1);
     pfWheelLockedUntil = Date.now() + 320;
     return;
@@ -1151,3 +1216,4 @@ tiltToHome();
 updateGlobalProgress();
 hideSayHiHover();
 closeSiteMenu();
+updateAudioUI();
