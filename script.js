@@ -164,7 +164,7 @@ const HOME_BG = { y: -720, x: 0 };
 const PROJ_BG = { y: -610, x: -200 };
 const GRASS_ENTER_EXTRA = 210;
 const GRASS_EXIT_EXTRA = 0;
-const GRASS_TILE_H = 1582.01;
+const GRASS_TILE_H = 1439.84;
 const GRASS_HOME_BOTTOM_OVERFLOW = 40;
 
 function getGrassHomeBgY() {
@@ -1217,3 +1217,4 @@ updateGlobalProgress();
 hideSayHiHover();
 closeSiteMenu();
 updateAudioUI();
+
