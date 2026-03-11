@@ -5,12 +5,6 @@ const logo = document.getElementById("logoBtn");
 /* Global top progress */
 const topProgressFill = document.getElementById("topProgressFill");
 
-/* Audio */
-const bgAudio = document.getElementById("bgAudio");
-const audioToggleBtn = document.getElementById("audioToggleBtn");
-const audioToggleIcon = document.getElementById("audioToggleIcon");
-const audioToggleLabel = document.getElementById("audioToggleLabel");
-
 /* Menu */
 const siteMenu = document.getElementById("siteMenu");
 const siteMenuClose = document.getElementById("siteMenuClose");
@@ -116,80 +110,6 @@ gsap.to(".clouds", {
 });
 
 /* ============================= */
-/* AUDIO                         */
-/* ============================= */
-const AUDIO_SOURCES = [
-  "assets/background_audio.mp3",
-  "assets/portfolio_audio.mp3"
-];
-
-function updateAudioUI() {
-  if (!audioToggleBtn || !audioToggleIcon || !audioToggleLabel || !bgAudio) return;
-
-  if (bgAudio.muted) {
-    audioToggleIcon.textContent = "🔊";
-    audioToggleLabel.textContent = "Click to unmute audio";
-    audioToggleBtn.setAttribute("aria-label", "Unmute website sound");
-  } else {
-    audioToggleIcon.textContent = "🔇";
-    audioToggleLabel.textContent = "Click to mute audio";
-    audioToggleBtn.setAttribute("aria-label", "Mute website sound");
-  }
-}
-
-async function playAudioWithFallback() {
-  if (!bgAudio) return false;
-
-  for (const src of AUDIO_SOURCES) {
-    try {
-      if (bgAudio.dataset.activeSrc !== src) {
-        bgAudio.src = src;
-        bgAudio.dataset.activeSrc = src;
-        bgAudio.load();
-      }
-
-      const playPromise = bgAudio.play();
-      if (playPromise && typeof playPromise.then === "function") {
-        await playPromise;
-      }
-      return true;
-    } catch (error) {
-      console.warn(`Audio source failed: ${src}`, error);
-    }
-  }
-
-  return false;
-}
-
-async function toggleAudio() {
-  if (!bgAudio) return;
-
-  if (bgAudio.muted) {
-    bgAudio.muted = false;
-    const played = await playAudioWithFallback();
-    if (!played) {
-      bgAudio.muted = true;
-    }
-  } else {
-    bgAudio.muted = true;
-  }
-
-  updateAudioUI();
-}
-
-if (bgAudio) {
-  bgAudio.muted = true;
-  bgAudio.loop = true;
-  bgAudio.preload = "auto";
-}
-
-audioToggleBtn?.addEventListener("click", async (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  await toggleAudio();
-});
-
-/* ============================= */
 /* HOME SCALE + GRASS            */
 /* ============================= */
 const HOME_BG = { y: -720, x: 0 };
@@ -199,9 +119,11 @@ const GRASS_EXIT_EXTRA = 0;
 
 const FIGMA_FRAME_W = 1440;
 const FIGMA_FRAME_H = 900;
-const FIGMA_GRASS_W = 2691;
-const FIGMA_GRASS_H = 1582.01;
-const FIGMA_GRASS_BOTTOM_OVERFLOW = 40;
+
+/* 60% grass */
+const FIGMA_GRASS_W = 1614.6;
+const FIGMA_GRASS_H = 949.206;
+const FIGMA_GRASS_BOTTOM_OVERFLOW = 24;
 
 function getHomeScale() {
   return Math.min(window.innerWidth / FIGMA_FRAME_W, window.innerHeight / FIGMA_FRAME_H, 1);
@@ -1277,4 +1199,3 @@ tiltToHome();
 updateGlobalProgress();
 hideSayHiHover();
 closeSiteMenu();
-updateAudioUI();
