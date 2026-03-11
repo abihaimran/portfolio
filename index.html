@@ -25,6 +25,16 @@
     <img class="logo bob-sync" id="logoBtn" src="assets/logo.png" alt="Abiha logo" />
   </header>
 
+  <!-- Audio -->
+  <audio id="bgAudio" loop autoplay muted playsinline preload="auto">
+    <source src="assets/portfolio_audio.mp3" type="audio/mpeg" />
+  </audio>
+
+  <button class="audio-toggle" id="audioToggleBtn" type="button" aria-label="Toggle website sound">
+    <span class="audio-toggle-icon" id="audioToggleIcon">🔇</span>
+    <span class="audio-toggle-label" id="audioToggleLabel">Click to unmute</span>
+  </button>
+
   <!-- Menu -->
   <div class="site-menu" id="siteMenu" aria-hidden="true">
     <button class="site-menu-close" id="siteMenuClose" type="button" aria-label="Close menu">x</button>
@@ -186,7 +196,7 @@ and "></span><em class="t-italic" data-text="experiences."></em>
                       <div class="pf-text-wrap">
                         <div class="pf-text-scroll" id="pfTextScroll">Past Forward is a concept that derives from the
 recognition that navigating through relationships
-in life, especially platonic companionships, often
+in life, especially platonic ones, often
 involves encountering negative experiences that
 prove to be painful setbacks in individuals'
 personal growth, affecting their self-esteem,
@@ -473,4 +483,3 @@ healing power of positive memories.</div>
   <script src="script.js"></script>
 </body>
 </html>
-
