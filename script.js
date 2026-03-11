@@ -64,6 +64,9 @@ const jwTeaser = document.getElementById("jwTeaser");
 
 /* Home frames */
 const homeDesignFrames = Array.from(document.querySelectorAll(".home-design-frame"));
+const scalableHomeAssets = Array.from(document.querySelectorAll(
+  ".home-asset-abiha, .home-asset-design, .home-asset-portfolio, .home-asset-sayhi"
+));
 
 let currentPanel = 0;
 let isAnimating = false;
@@ -115,6 +118,11 @@ gsap.to(".clouds", {
 /* ============================= */
 /* AUDIO                         */
 /* ============================= */
+const AUDIO_SOURCES = [
+  "assets/background_audio.mp3",
+  "assets/portfolio_audio.mp3"
+];
+
 function updateAudioUI() {
   if (!audioToggleBtn || !audioToggleIcon || !audioToggleLabel || !bgAudio) return;
 
@@ -129,22 +137,41 @@ function updateAudioUI() {
   }
 }
 
-async function toggleAudio() {
-  if (!bgAudio) return;
+async function playAudioWithFallback() {
+  if (!bgAudio) return false;
 
-  try {
-    if (bgAudio.muted) {
-      bgAudio.muted = false;
+  for (const src of AUDIO_SOURCES) {
+    try {
+      if (bgAudio.dataset.activeSrc !== src) {
+        bgAudio.src = src;
+        bgAudio.dataset.activeSrc = src;
+        bgAudio.load();
+      }
+
       const playPromise = bgAudio.play();
       if (playPromise && typeof playPromise.then === "function") {
         await playPromise;
       }
-    } else {
+      return true;
+    } catch (error) {
+      console.warn(`Audio source failed: ${src}`, error);
+    }
+  }
+
+  return false;
+}
+
+async function toggleAudio() {
+  if (!bgAudio) return;
+
+  if (bgAudio.muted) {
+    bgAudio.muted = false;
+    const played = await playAudioWithFallback();
+    if (!played) {
       bgAudio.muted = true;
     }
-  } catch (error) {
+  } else {
     bgAudio.muted = true;
-    console.error("Audio playback failed:", error);
   }
 
   updateAudioUI();
@@ -163,22 +190,65 @@ audioToggleBtn?.addEventListener("click", async (e) => {
 });
 
 /* ============================= */
-/* CAMERA TILT + GRASS SLIDE     */
+/* HOME SCALE + GRASS            */
 /* ============================= */
 const HOME_BG = { y: -720, x: 0 };
 const PROJ_BG = { y: -610, x: -200 };
 const GRASS_ENTER_EXTRA = 210;
 const GRASS_EXIT_EXTRA = 0;
-const GRASS_TILE_H = 1582.01;
-const GRASS_HOME_BOTTOM_OVERFLOW = 40;
 
-function getGrassHomeBgY() {
-  return window.innerHeight - GRASS_TILE_H + GRASS_HOME_BOTTOM_OVERFLOW;
+const FIGMA_FRAME_W = 1440;
+const FIGMA_FRAME_H = 900;
+const FIGMA_GRASS_W = 2691;
+const FIGMA_GRASS_H = 1582.01;
+const FIGMA_GRASS_BOTTOM_OVERFLOW = 40;
+
+function getHomeScale() {
+  return Math.min(window.innerWidth / FIGMA_FRAME_W, window.innerHeight / FIGMA_FRAME_H, 1);
+}
+
+function updateHomeScale(){
+  const s = getHomeScale();
+
+  homeDesignFrames.forEach(frame => {
+    frame.style.width = "1440px";
+    frame.style.height = "900px";
+    frame.style.left = "50%";
+    frame.style.top = "auto";
+    frame.style.bottom = "0px";
+    frame.style.transform = "translateX(-50%)";
+    frame.style.transformOrigin = "center bottom";
+  });
+
+  scalableHomeAssets.forEach(asset => {
+    asset.style.transform = `scale(${s})`;
+  });
+
+  updateGrassHomeState();
+}
+
+function updateGrassHomeState() {
+  const grass = document.querySelector(".grass");
+  if (!grass) return;
+
+  const s = getHomeScale();
+  const scaledW = FIGMA_GRASS_W * s;
+  const scaledH = FIGMA_GRASS_H * s;
+  const scaledOverflow = FIGMA_GRASS_BOTTOM_OVERFLOW * s;
+  const y = window.innerHeight - scaledH + scaledOverflow;
+
+  grass.style.backgroundSize = `${scaledW}px ${scaledH}px`;
+  grass.style.backgroundPositionX = `${HOME_BG.x}px`;
+  grass.style.backgroundPositionY = `${y}px`;
 }
 
 function getGrassProjectBgY() {
-  const originalDelta = PROJ_BG.y - HOME_BG.y;
-  return getGrassHomeBgY() + originalDelta;
+  const s = getHomeScale();
+  const scaledH = FIGMA_GRASS_H * s;
+  const scaledOverflow = FIGMA_GRASS_BOTTOM_OVERFLOW * s;
+  const homeY = window.innerHeight - scaledH + scaledOverflow;
+  const delta = (PROJ_BG.y - HOME_BG.y) * s;
+  return homeY + delta;
 }
 
 function tiltToProject(){
@@ -205,7 +275,7 @@ function tiltToProject(){
 
   gsap.to(grass, {
     backgroundPositionX: `${HOME_BG.x}px`,
-    backgroundPositionY: `${grassProjY + GRASS_ENTER_EXTRA}px`,
+    backgroundPositionY: `${grassProjY + (GRASS_ENTER_EXTRA * getHomeScale())}px`,
     opacity: 0,
     duration: 1.00,
     ease: "power3.inOut",
@@ -218,7 +288,10 @@ function tiltToHome(){
   const clouds = document.querySelector(".clouds");
   const grass = document.querySelector(".grass");
 
-  const grassHomeY = getGrassHomeBgY();
+  const s = getHomeScale();
+  const scaledH = FIGMA_GRASS_H * s;
+  const scaledOverflow = FIGMA_GRASS_BOTTOM_OVERFLOW * s;
+  const grassHomeY = window.innerHeight - scaledH + scaledOverflow;
 
   gsap.to(sky, {
     backgroundPositionX: `${HOME_BG.x}px`,
@@ -460,22 +533,8 @@ function goToPanel(nextIndex) {
 }
 
 /* ============================= */
-/* SCALE / LOCK FRAMES           */
+/* SCALE FRAMES                  */
 /* ============================= */
-function updateHomeScale(){
-  const s = Math.min(window.innerWidth / 1440, window.innerHeight / 900, 1);
-
-  homeDesignFrames.forEach(frame => {
-    frame.style.width = "1440px";
-    frame.style.height = "900px";
-    frame.style.left = "50%";
-    frame.style.top = "auto";
-    frame.style.bottom = "0px";
-    frame.style.transform = `translateX(-50%) scale(${s})`;
-    frame.style.transformOrigin = "center bottom";
-  });
-}
-
 function updatePfScale(){
   if (!pfDesignFrame) return;
   const s = Math.min(window.innerWidth / 1440, window.innerHeight / 900, 1);
