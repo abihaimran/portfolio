@@ -112,11 +112,15 @@ const GRASS_ENTER_EXTRA = 210;
 const GRASS_EXIT_EXTRA = 0;
 
 function getSafeHomeBgY() {
-  return HOME_BG.y;
+  const tileH = 1582;
+  const baseY = -720;
+  return Math.max(baseY, window.innerHeight - tileH);
 }
 
 function getSafeProjectBgY() {
-  return PROJ_BG.y;
+  const homeY = getSafeHomeBgY();
+  const originalDelta = PROJ_BG.y - HOME_BG.y;
+  return homeY + originalDelta;
 }
 
 function tiltToProject(){
