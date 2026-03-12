@@ -9,8 +9,8 @@
   --tile-h: 1582px;
   --tile-offset-y: -720px;
 
-  --mono-size: 26px;
-  --jacquard-size: 126px;
+  --mono-size: 30px;
+  --jacquard-size: 130px;
 
   --two-line-height: 240px;
   --slot1-top: 310px;
@@ -76,12 +76,6 @@
 *{ margin:0; padding:0; box-sizing:border-box; }
 html, body{ height:100%; width:100%; }
 body{ overflow:hidden; background:#000; }
-
-/* remove audio completely */
-#bgAudio,
-.audio-toggle{
-  display:none !important;
-}
 
 /* TOP PROGRESS */
 .top-progress{
@@ -221,8 +215,8 @@ body{ overflow:hidden; background:#000; }
   z-index:3;
   background-image:url("assets/grass.png");
   background-repeat:repeat-x;
-  background-size:2450px 1439.84px;
-  background-position:0px calc(100vh - 1439.84px + 40px);
+  background-size:var(--tile-w) var(--tile-h);
+  background-position:0px var(--tile-offset-y);
   opacity:1;
 }
 
@@ -259,73 +253,6 @@ body{ overflow:hidden; background:#000; }
   pointer-events:auto;
 }
 
-/* fixed text layer */
-.panel-text-frame{
-  position:absolute;
-  inset:0;
-  z-index:40;
-  pointer-events:none;
-}
-.panel-text-frame > *{
-  pointer-events:auto;
-}
-
-/* centered text block for panel 0 and 1 */
-.panel-text-frame .intro-text-two{
-  position:absolute !important;
-  left:50% !important;
-  top:50% !important;
-  width:min(1100px, calc(100vw - 120px)) !important;
-  height:auto !important;
-  transform:translate(-50%, -50%) !important;
-  display:flex !important;
-  flex-direction:column !important;
-  align-items:center !important;
-  justify-content:center !important;
-  text-align:center !important;
-  gap:14px !important;
-  inset:auto !important;
-}
-
-.panel-text-frame .intro-text-two .slot-1,
-.panel-text-frame .intro-text-two .slot-2,
-.panel-text-frame .intro-text-two .slot-3{
-  position:static !important;
-  left:auto !important;
-  top:auto !important;
-  transform:none !important;
-  width:auto !important;
-}
-
-.panel-text-frame .intro-text-two .slot-3{
-  min-height:auto !important;
-}
-
-/* centered text block for panel 2 */
-.panel-text-frame .intro-text-design{
-  position:absolute !important;
-  left:50% !important;
-  top:50% !important;
-  width:min(1100px, calc(100vw - 120px)) !important;
-  transform:translate(-50%, -50%) !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  text-align:center !important;
-  inset:auto !important;
-  min-height:auto !important;
-}
-
-/* centered text block for panel 6 */
-.panel-text-frame .portfolio-slide-copy{
-  position:absolute !important;
-  left:50% !important;
-  top:50% !important;
-  width:min(1240px, calc(100vw - 120px)) !important;
-  transform:translate(-50%, -50%) !important;
-  text-align:center !important;
-}
-
 /* Intro text base */
 .textblock{
   width:min(1100px, calc(100vw - 120px));
@@ -359,7 +286,7 @@ body{ overflow:hidden; background:#000; }
   font-weight:400;
 }
 
-/* original intro rules remain for structure before JS moves them */
+/* Intro panel positioning */
 .intro-text-two{
   position:absolute;
   inset:0;
@@ -387,7 +314,7 @@ body{ overflow:hidden; background:#000; }
   transform:translateX(-50%);
 }
 .intro-subtitle{
-  font-size:26px;
+  font-size:30px;
   line-height:1.25;
   min-height:38px;
 }
@@ -461,13 +388,13 @@ body{ overflow:hidden; background:#000; }
   font-family:"Roboto Mono", monospace;
 }
 .portfolio-slide-title{
-  font-size:26px;
+  font-size:30px;
   font-weight:400;
   line-height:1.25;
 }
 .portfolio-slide-sub{
   margin-top:26px;
-  font-size:21px;
+  font-size:25px;
   font-weight:300;
   line-height:1.55;
 }
@@ -508,13 +435,13 @@ body{ overflow:hidden; background:#000; }
 }
 
 .sayhi-default-text{
-  font-size:26px;
+  font-size:30px;
   font-weight:400;
   opacity:1;
 }
 
 .sayhi-hover-text{
-  font-size:26px;
+  font-size:30px;
   font-weight:400;
   opacity:0;
 }
@@ -525,7 +452,7 @@ body{ overflow:hidden; background:#000; }
   padding:0;
   margin:0;
   font-family:"Roboto Mono", monospace;
-  font-size:26px;
+  font-size:30px;
   color:var(--red);
   font-weight:500;
   text-decoration:underline;
@@ -612,6 +539,7 @@ body{ overflow:hidden; background:#000; }
   pointer-events:auto !important;
 }
 
+/* Hide overlay instantly once we enter project */
 body.pf-mode .pf-overlay{
   opacity:0 !important;
   pointer-events:none !important;
@@ -649,8 +577,8 @@ body.pf-mode .pf-overlay{
   user-select:text;
   text-align:left;
 }
-.pf-overlay-title{ font-size:21px; font-weight:500; line-height:1.25; }
-.pf-overlay-desc{ font-size:21px; font-weight:300; line-height:1.4; }
+.pf-overlay-title{ font-size:25px; font-weight:500; line-height:1.25; }
+.pf-overlay-desc{ font-size:25px; font-weight:300; line-height:1.4; }
 
 .pf-view-btn{
   margin-top:auto;
@@ -659,7 +587,7 @@ body.pf-mode .pf-overlay{
   border:none;
   padding:0;
   font-family:"Roboto Mono", monospace;
-  font-size:21px;
+  font-size:25px;
   font-weight:500;
   color:var(--red);
   cursor:pointer;
@@ -786,7 +714,7 @@ body.pf-mode .pf-overlay{
   padding-top:0 !important;
   margin-top:0 !important;
   font-family:"Roboto Mono", monospace;
-  font-size:21px;
+  font-size:25px;
   font-weight:400;
   line-height:1.55;
   color:rgba(255,255,255,0.96);
@@ -801,7 +729,7 @@ body.pf-mode .pf-overlay{
   top:72.3px;
   text-align:center;
   font-family:"Roboto Mono", monospace;
-  font-size:26px;
+  font-size:30px;
   font-weight:400;
   color:rgba(255,255,255,0.92);
   letter-spacing:0.5px;
@@ -833,7 +761,7 @@ body.pf-mode .pf-overlay{
   align-items:center;
   gap:18px;
   font-family:"Roboto Mono", monospace;
-  font-size:26px;
+  font-size:30px;
   font-weight:400;
   color:rgba(255,255,255,0.95);
   padding:18px 34px;
@@ -1048,8 +976,8 @@ body.tb-mode .tb-overlay{
   user-select:text;
   text-align:left;
 }
-.tb-overlay-title{ font-size:21px; font-weight:500; line-height:1.25; }
-.tb-overlay-desc{ font-size:21px; font-weight:300; line-height:1.35; }
+.tb-overlay-title{ font-size:25px; font-weight:500; line-height:1.25; }
+.tb-overlay-desc{ font-size:25px; font-weight:300; line-height:1.35; }
 
 .tb-view-btn{
   margin-top:auto;
@@ -1058,7 +986,7 @@ body.tb-mode .tb-overlay{
   border:none;
   padding:0;
   font-family:"Roboto Mono", monospace;
-  font-size:21px;
+  font-size:25px;
   font-weight:500;
   color:var(--red);
   cursor:pointer;
@@ -1164,7 +1092,7 @@ body.tb-mode .tb-overlay{
   top:50%;
   transform:translate(-50%, -50%);
   font-family:"Roboto Mono", monospace;
-  font-size:26px;
+  font-size:30px;
   font-weight:400;
   color:rgba(255,255,255,0.95);
   padding:18px 34px;
@@ -1270,14 +1198,14 @@ body.tb-mode .tb-overlay{
 }
 
 .jw-overlay-title{
-  font-size:21px;
+  font-size:25px;
   font-weight:500;
   line-height:1.55;
 }
 .jw-overlay-soon{
   margin-top:auto;
   align-self:flex-end;
-  font-size:21px;
+  font-size:25px;
   font-weight:300;
   font-style:italic;
   color:rgba(43,43,43,0.72);
@@ -1292,8 +1220,8 @@ img[data-optional="true"]{ display:block; }
 @media (max-width: 768px){
   :root{
     --ui-pad: 28px;
-    --mono-size: 16px;
-    --jacquard-size: 74px;
+    --mono-size: 18px;
+    --jacquard-size: 76px;
     --two-line-height: 170px;
     --slot1-top: 310px;
     --slot2-top: 352px;
@@ -1306,3 +1234,6 @@ img[data-optional="true"]{ display:block; }
 
   .logo{ width:34px; }
 }
+
+
+
