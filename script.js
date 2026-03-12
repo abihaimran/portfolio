@@ -408,7 +408,11 @@ function goToPanel(nextIndex) {
 /* SCALE FRAMES                  */
 /* ============================= */
 function updateHomeScale(){
-  document.documentElement.style.setProperty("--home-scale", "1");
+  const fw = 1440;
+  const fh = 900;
+  const s = Math.min(window.innerWidth / fw, window.innerHeight / fh, 1);
+  document.documentElement.style.setProperty("--home-scale", String(s));
+  document.documentElement.style.setProperty("--home-scale-inv", String(1 / s));
 }
 
 function updatePfScale(){
