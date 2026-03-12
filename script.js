@@ -56,9 +56,6 @@ const tbEnterBtn = document.getElementById("tbEnterBtn");
 const jwDesignFrame = document.getElementById("jwDesignFrame");
 const jwTeaser = document.getElementById("jwTeaser");
 
-/* Home frames */
-const homeDesignFrames = Array.from(document.querySelectorAll(".home-design-frame"));
-
 let currentPanel = 0;
 let isAnimating = false;
 
@@ -107,55 +104,23 @@ gsap.to(".clouds", {
 });
 
 /* ============================= */
-/* DETACH HOME TEXT              */
-/* ============================= */
-function ensurePanelTextFrame(panel){
-  if (!panel) return null;
-  let frame = panel.querySelector(".panel-text-frame");
-  if (frame) return frame;
-
-  frame = document.createElement("div");
-  frame.className = "panel-text-frame";
-  panel.appendChild(frame);
-  return frame;
-}
-
-function moveElementToPanelTextFrame(panelIndex, selector){
-  const panel = panels[panelIndex];
-  if (!panel) return;
-
-  const el = panel.querySelector(selector);
-  if (!el || el.dataset.movedToPanelTextFrame === "true") return;
-
-  const textFrame = ensurePanelTextFrame(panel);
-  textFrame.appendChild(el);
-  el.dataset.movedToPanelTextFrame = "true";
-}
-
-function detachMainHomeText(){
-  moveElementToPanelTextFrame(0, ".intro-text-two");
-  moveElementToPanelTextFrame(1, ".intro-text-two");
-  moveElementToPanelTextFrame(2, ".intro-text-design");
-  moveElementToPanelTextFrame(6, ".portfolio-slide-copy");
-}
-
-/* ============================= */
 /* CAMERA TILT + GRASS SLIDE     */
 /* ============================= */
 const HOME_BG = { y: -720, x: 0 };
 const PROJ_BG = { y: -610, x: -200 };
 const GRASS_ENTER_EXTRA = 210;
 const GRASS_EXIT_EXTRA = 0;
-const GRASS_TILE_H = 1439.84;
-const GRASS_HOME_BOTTOM_OVERFLOW = 40;
 
-function getGrassHomeBgY() {
-  return window.innerHeight - GRASS_TILE_H + GRASS_HOME_BOTTOM_OVERFLOW;
+function getSafeHomeBgY() {
+  const tileH = 1582;
+  const baseY = -720;
+  return Math.max(baseY, window.innerHeight - tileH);
 }
 
-function getGrassProjectBgY() {
+function getSafeProjectBgY() {
+  const homeY = getSafeHomeBgY();
   const originalDelta = PROJ_BG.y - HOME_BG.y;
-  return getGrassHomeBgY() + originalDelta;
+  return homeY + originalDelta;
 }
 
 function tiltToProject(){
@@ -163,26 +128,27 @@ function tiltToProject(){
   const clouds = document.querySelector(".clouds");
   const grass = document.querySelector(".grass");
 
-  const grassProjY = getGrassProjectBgY();
+  const safeProjY = getSafeProjectBgY();
+  const safeHomeX = HOME_BG.x;
 
   gsap.to(sky, {
     backgroundPositionX: `${PROJ_BG.x}px`,
-    backgroundPositionY: `${PROJ_BG.y}px`,
+    backgroundPositionY: `${safeProjY}px`,
     duration: 1.05,
     ease: "power3.inOut",
     overwrite: true
   });
 
   gsap.to(clouds, {
-    backgroundPositionY: `${PROJ_BG.y}px`,
+    backgroundPositionY: `${safeProjY}px`,
     duration: 1.05,
     ease: "power3.inOut",
     overwrite: false
   });
 
   gsap.to(grass, {
-    backgroundPositionX: `${HOME_BG.x}px`,
-    backgroundPositionY: `${grassProjY + GRASS_ENTER_EXTRA}px`,
+    backgroundPositionX: `${safeHomeX}px`,
+    backgroundPositionY: `${safeProjY + GRASS_ENTER_EXTRA}px`,
     opacity: 0,
     duration: 1.00,
     ease: "power3.inOut",
@@ -195,18 +161,18 @@ function tiltToHome(){
   const clouds = document.querySelector(".clouds");
   const grass = document.querySelector(".grass");
 
-  const grassHomeY = getGrassHomeBgY();
+  const safeHomeY = getSafeHomeBgY();
 
   gsap.to(sky, {
     backgroundPositionX: `${HOME_BG.x}px`,
-    backgroundPositionY: `${HOME_BG.y}px`,
+    backgroundPositionY: `${safeHomeY}px`,
     duration: 1.05,
     ease: "power3.inOut",
     overwrite: true
   });
 
   gsap.to(clouds, {
-    backgroundPositionY: `${HOME_BG.y}px`,
+    backgroundPositionY: `${safeHomeY}px`,
     duration: 1.05,
     ease: "power3.inOut",
     overwrite: false
@@ -214,7 +180,7 @@ function tiltToHome(){
 
   gsap.to(grass, {
     backgroundPositionX: `${HOME_BG.x}px`,
-    backgroundPositionY: `${grassHomeY + GRASS_EXIT_EXTRA}px`,
+    backgroundPositionY: `${safeHomeY + GRASS_EXIT_EXTRA}px`,
     opacity: 1,
     duration: 1.00,
     ease: "power3.inOut",
@@ -314,6 +280,7 @@ function eraseSpan(el, speed) {
 
 function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
 
+/* no more restart-jump logic */
 function ensureBobClass(elements){
   elements.forEach(el => {
     if (el && !el.classList.contains("bob-sync")) {
@@ -344,6 +311,7 @@ async function runTyping(panelIndex) {
   const panel = panels[panelIndex];
   if (!panel) return;
 
+  /* Say Hi panel custom type */
   if (panelIndex === 7) {
     if (panel.dataset.typed === "true") return;
     if (sayHiDefaultText) {
@@ -437,20 +405,13 @@ function goToPanel(nextIndex) {
 }
 
 /* ============================= */
-/* SCALE / LOCK FRAMES           */
+/* SCALE FRAMES                  */
 /* ============================= */
 function updateHomeScale(){
-  const s = Math.min(window.innerWidth / 1440, window.innerHeight / 900, 1);
-
-  homeDesignFrames.forEach(frame => {
-    frame.style.width = "1440px";
-    frame.style.height = "900px";
-    frame.style.left = "50%";
-    frame.style.top = "auto";
-    frame.style.bottom = "0px";
-    frame.style.transform = `translateX(-50%) scale(${s})`;
-    frame.style.transformOrigin = "center bottom";
-  });
+  const fw = 1440;
+  const fh = 900;
+  const s = Math.min(window.innerWidth / fw, window.innerHeight / fh, 1);
+  document.documentElement.style.setProperty("--home-scale", String(s));
 }
 
 function updatePfScale(){
@@ -471,7 +432,13 @@ function updateJwScale(){
   jwDesignFrame.style.setProperty("--jw-scale", String(s));
 }
 
-detachMainHomeText();
+window.addEventListener("resize", () => {
+  updateHomeScale();
+  updatePfScale();
+  updateTbScale();
+  updateJwScale();
+});
+
 updateHomeScale();
 updatePfScale();
 updateTbScale();
@@ -669,15 +636,8 @@ function setBookNavVisibility(){
   if (pfBook.page <= 1) hardHide(pfBookPrevBtn);
   else hardShow(pfBookPrevBtn);
 
-  hardShow(pfBookNextBtn);
-
-  if (pfBook.page >= pfBook.total) {
-    pfBookNextBtn.textContent = "Exit";
-    pfBookNextBtn.setAttribute("aria-label", "Exit book");
-  } else {
-    pfBookNextBtn.textContent = "Next";
-    pfBookNextBtn.setAttribute("aria-label", "Next page");
-  }
+  if (pfBook.page >= pfBook.total) hardHide(pfBookNextBtn);
+  else hardShow(pfBookNextBtn);
 }
 
 function setBookPage(page){
@@ -739,12 +699,6 @@ pfBookNextBtn?.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
   if (!pfBook.active) return;
-
-  if (pfBook.page >= pfBook.total) {
-    exitBookMode();
-    return;
-  }
-
   setBookPage(pfBook.page + 1);
   pfWheelLockedUntil = Date.now() + 240;
 });
@@ -753,10 +707,7 @@ function pfStep(dir){
   if (!pfState.active) return;
 
   if (pfBook.active){
-    if (dir > 0) {
-      if (pfBook.page >= pfBook.total) return;
-      setBookPage(pfBook.page + 1);
-    }
+    if (dir > 0) setBookPage(pfBook.page + 1);
     if (dir < 0) setBookPage(pfBook.page - 1);
     pfWheelLockedUntil = Date.now() + 320;
     return;
@@ -1189,8 +1140,6 @@ normalizeSlides(tbVpContent, "data-tb-slide");
 
 /* Init */
 gsap.set(world, { x: 0 });
-detachMainHomeText();
-updateHomeScale();
 runTyping(0);
 wheelLockedUntil = Date.now() + 600;
 tiltToHome();
