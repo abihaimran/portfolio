@@ -77,6 +77,12 @@
 html, body{ height:100%; width:100%; }
 body{ overflow:hidden; background:#000; }
 
+/* remove audio completely */
+#bgAudio,
+.audio-toggle{
+  display:none !important;
+}
+
 /* TOP PROGRESS */
 .top-progress{
   position:fixed;
@@ -108,44 +114,6 @@ body{ overflow:hidden; background:#000; }
   display:block;
   pointer-events:auto;
   cursor:pointer;
-}
-
-/* Audio toggle */
-.audio-toggle{
-  position:fixed;
-  left:var(--ui-pad);
-  bottom:var(--ui-pad);
-  display:flex;
-  align-items:center;
-  gap:7px;
-  min-height:38px;
-  padding:0 12px;
-  border-radius:999px;
-  background:rgba(255,255,255,0.15);
-  border:2px solid rgba(255,255,255,0.85);
-  color:rgba(255,255,255,0.95);
-  font-family:"Roboto Mono", monospace;
-  font-size:12px;
-  font-weight:300;
-  cursor:pointer;
-  z-index:16000;
-  transition:color 180ms ease, border-color 180ms ease, background 180ms ease;
-}
-.audio-toggle:hover,
-.audio-toggle:focus-visible{
-  color:var(--red);
-  border-color:var(--red);
-  background:rgba(255,255,255,0.15);
-  outline:none;
-}
-.audio-toggle-icon{
-  font-size:12px;
-  line-height:1;
-}
-.audio-toggle-label{
-  font-size:12px;
-  font-weight:300;
-  line-height:1;
 }
 
 /* Menu */
@@ -253,8 +221,8 @@ body{ overflow:hidden; background:#000; }
   z-index:3;
   background-image:url("assets/grass.png");
   background-repeat:repeat-x;
-  background-size:2691px 1582.01px;
-  background-position:0px -642.02px;
+  background-size:2450px 1439.84px;
+  background-position:0px calc(100vh - 1439.84px + 40px);
   opacity:1;
 }
 
@@ -291,20 +259,71 @@ body{ overflow:hidden; background:#000; }
   pointer-events:auto;
 }
 
-/* Fixed text frame injected by JS for home panels */
+/* fixed text layer */
 .panel-text-frame{
   position:absolute;
-  left:50%;
-  top:0;
-  width:1440px;
-  height:900px;
-  transform:translateX(-50%);
-  transform-origin:center top;
+  inset:0;
+  z-index:40;
   pointer-events:none;
-  z-index:30;
 }
 .panel-text-frame > *{
   pointer-events:auto;
+}
+
+/* centered text block for panel 0 and 1 */
+.panel-text-frame .intro-text-two{
+  position:absolute !important;
+  left:50% !important;
+  top:50% !important;
+  width:min(1100px, calc(100vw - 120px)) !important;
+  height:auto !important;
+  transform:translate(-50%, -50%) !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  gap:14px !important;
+  inset:auto !important;
+}
+
+.panel-text-frame .intro-text-two .slot-1,
+.panel-text-frame .intro-text-two .slot-2,
+.panel-text-frame .intro-text-two .slot-3{
+  position:static !important;
+  left:auto !important;
+  top:auto !important;
+  transform:none !important;
+  width:auto !important;
+}
+
+.panel-text-frame .intro-text-two .slot-3{
+  min-height:auto !important;
+}
+
+/* centered text block for panel 2 */
+.panel-text-frame .intro-text-design{
+  position:absolute !important;
+  left:50% !important;
+  top:50% !important;
+  width:min(1100px, calc(100vw - 120px)) !important;
+  transform:translate(-50%, -50%) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  inset:auto !important;
+  min-height:auto !important;
+}
+
+/* centered text block for panel 6 */
+.panel-text-frame .portfolio-slide-copy{
+  position:absolute !important;
+  left:50% !important;
+  top:50% !important;
+  width:min(1240px, calc(100vw - 120px)) !important;
+  transform:translate(-50%, -50%) !important;
+  text-align:center !important;
 }
 
 /* Intro text base */
@@ -340,7 +359,7 @@ body{ overflow:hidden; background:#000; }
   font-weight:400;
 }
 
-/* Intro panel positioning */
+/* original intro rules remain for structure before JS moves them */
 .intro-text-two{
   position:absolute;
   inset:0;
@@ -1286,13 +1305,4 @@ img[data-optional="true"]{ display:block; }
   }
 
   .logo{ width:34px; }
-
-  .audio-toggle{
-    min-height:36px;
-    padding:0 10px;
-    font-size:11px;
-    gap:6px;
-  }
-  .audio-toggle-icon{ font-size:11px; }
-  .audio-toggle-label{ font-size:11px; }
 }
