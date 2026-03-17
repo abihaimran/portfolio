@@ -119,7 +119,7 @@ body{ overflow:hidden; background:#000; }
   display:flex;
   flex-direction:column;
   justify-content:center;
-  gap:6px;
+  gap:7px;
   background:transparent;
   border:none;
   padding:0;
@@ -129,8 +129,8 @@ body{ overflow:hidden; background:#000; }
 .hamburger span{
   display:block;
   width:100%;
-  height:4px;
-  border-radius:999px;
+  height:2px;
+  border-radius:0;
   background:var(--red);
 }
 
@@ -138,7 +138,6 @@ body{ overflow:hidden; background:#000; }
 .home-nav{
   position:fixed;
   top:50%;
-  transform:translateY(-50%);
   background:transparent;
   border:none;
   padding:0;
@@ -151,10 +150,14 @@ body{ overflow:hidden; background:#000; }
   user-select:none;
 }
 .home-nav-prev{
-  left:var(--ui-pad);
+  left:53px;
+  transform:translateY(-50%) rotate(-90deg);
+  transform-origin:left center;
 }
 .home-nav-next{
-  right:var(--ui-pad);
+  right:53px;
+  transform:translateY(-50%) rotate(90deg);
+  transform-origin:right center;
 }
 .home-nav.is-hidden{
   display:none !important;
@@ -163,8 +166,8 @@ body{ overflow:hidden; background:#000; }
 /* Menu */
 .site-menu{
   position:fixed;
-  top:72px;
-  right:68px;
+  top:calc(var(--ui-pad) + 10px);
+  right:var(--ui-pad);
   left:auto;
   width:350px;
   min-height:430px;
@@ -407,10 +410,10 @@ body{ overflow:hidden; background:#000; }
   height:452px;
 }
 .home-asset-design{
-  left:132px;
-  top:476px;
-  width:1178px;
-  height:398px;
+  left:154px;
+  top:514px;
+  width:1088px;
+  height:356px;
 }
 .home-asset-portfolio{
   left:537px;
@@ -886,6 +889,43 @@ body.pf-mode .pf-overlay{
 }
 .pf-project.is-book .pf-vp-stroke{ opacity:1; }
 
+.pf-proj-nav{
+  position:absolute;
+  bottom:10px;
+  background:transparent;
+  border:none;
+  padding:0;
+  font-family:"Roboto Mono", monospace;
+  font-size:25px;
+  font-weight:400;
+  color:var(--red);
+  cursor:pointer;
+  opacity:0;
+  pointer-events:none;
+  user-select:none;
+}
+.pf-proj-prev{
+  left:-84px;
+  transform:rotate(-90deg);
+  transform-origin:left bottom;
+}
+.pf-proj-next{
+  right:-56px;
+  transform:rotate(90deg);
+  transform-origin:right bottom;
+}
+.pf-project.is-active .pf-proj-nav{
+  opacity:1;
+  pointer-events:auto;
+}
+.pf-project.is-book .pf-proj-nav{
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+.pf-proj-nav.is-hidden{
+  display:none !important;
+}
+
 .pf-book-close{
   position:absolute;
   right:-44px;
@@ -1160,6 +1200,39 @@ body.tb-mode .tb-overlay{
   background:rgba(255,255,255,0.18);
 }
 
+.tb-proj-nav{
+  position:absolute;
+  bottom:10px;
+  background:transparent;
+  border:none;
+  padding:0;
+  font-family:"Roboto Mono", monospace;
+  font-size:25px;
+  font-weight:400;
+  color:var(--red);
+  cursor:pointer;
+  opacity:0;
+  pointer-events:none;
+  user-select:none;
+}
+.tb-proj-prev{
+  left:-84px;
+  transform:rotate(-90deg);
+  transform-origin:left bottom;
+}
+.tb-proj-next{
+  right:-56px;
+  transform:rotate(90deg);
+  transform-origin:right bottom;
+}
+.tb-project.is-active .tb-proj-nav{
+  opacity:1;
+  pointer-events:auto;
+}
+.tb-proj-nav.is-hidden{
+  display:none !important;
+}
+
 /* ============================= */
 /* Jewellery teaser only         */
 /* ============================= */
@@ -1288,19 +1361,20 @@ img[data-optional="true"]{ display:block; }
   .hamburger{
     width:34px;
     height:34px;
-    gap:5px;
+    gap:6px;
   }
 
   .hamburger span{
-    height:4px;
+    height:2px;
   }
 
   .home-nav{
-    font-size:20px;
+    font-size:25px;
   }
 
   .site-menu{
     right:28px;
+    top:38px;
     width:calc(100vw - 56px);
     max-width:350px;
   }
