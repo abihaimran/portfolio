@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Jacquard+12&family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Jacquard+12&family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -23,7 +23,17 @@
   <!-- Fixed UI -->
   <header class="ui">
     <img class="logo bob-sync" id="logoBtn" src="assets/logo.png" alt="Abiha logo" />
+
+    <button class="hamburger bob-sync" id="hamburgerBtn" type="button" aria-label="Open menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </header>
+
+  <!-- Main panel nav -->
+  <button class="home-nav home-nav-prev" id="homePrevBtn" type="button">Previous</button>
+  <button class="home-nav home-nav-next" id="homeNextBtn" type="button">Next</button>
 
   <!-- Menu -->
   <div class="site-menu" id="siteMenu" aria-hidden="true">
@@ -459,6 +469,3 @@ forward through the power of positive memories.</div>
   <script src="script.js"></script>
 </body>
 </html>
-
-
-
