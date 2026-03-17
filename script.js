@@ -40,6 +40,8 @@ const pfVpContent = document.getElementById("pfVpContent");
 const pfTextScroll = document.getElementById("pfTextScroll");
 const pfViewport = document.getElementById("pfViewport");
 const pfReadBtn = document.getElementById("pfReadBtn");
+const pfProjPrevBtn = document.getElementById("pfProjPrevBtn");
+const pfProjNextBtn = document.getElementById("pfProjNextBtn");
 
 /* PF book */
 const pfBookReader = document.getElementById("pfBookReader");
@@ -56,6 +58,8 @@ const tbProject = document.getElementById("tbProject");
 const tbExitBtn = document.getElementById("tbExitBtn");
 const tbVpContent = document.getElementById("tbVpContent");
 const tbEnterBtn = document.getElementById("tbEnterBtn");
+const tbProjPrevBtn = document.getElementById("tbProjPrevBtn");
+const tbProjNextBtn = document.getElementById("tbProjNextBtn");
 
 /* Jewellery */
 const jwDesignFrame = document.getElementById("jwDesignFrame");
@@ -285,7 +289,6 @@ function eraseSpan(el, speed) {
 
 function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
 
-/* no more restart-jump logic */
 function ensureBobClass(elements){
   elements.forEach(el => {
     if (el && !el.classList.contains("bob-sync")) {
@@ -316,7 +319,6 @@ async function runTyping(panelIndex) {
   const panel = panels[panelIndex];
   if (!panel) return;
 
-  /* Say Hi panel custom type */
   if (panelIndex === 7) {
     if (panel.dataset.typed === "true") return;
     if (sayHiDefaultText) {
@@ -603,12 +605,23 @@ function forceParagraphTop(){
   setTimeout(() => { pfTextScroll.scrollTop = 0; }, 0);
 }
 
+function updatePfProjectNav(){
+  if (!pfProjPrevBtn || !pfProjNextBtn) return;
+
+  const hidePrev = !pfState.active || pfBook.active || pfState.slide === 0;
+  const hideNext = !pfState.active || pfBook.active || pfState.slide === PF_SLIDE_MAX;
+
+  pfProjPrevBtn.classList.toggle("is-hidden", hidePrev);
+  pfProjNextBtn.classList.toggle("is-hidden", hideNext);
+}
+
 function setPfSlide(idx){
   const prev = pfState.slide;
   pfState.slide = idx;
   animateSlideChange(pfVpContent, prev, idx, "data-pf-slide");
   if (idx === 1) forceParagraphTop();
   updateGlobalProgress();
+  updatePfProjectNav();
 }
 
 function getParagraphScrollFrac(){
@@ -635,6 +648,7 @@ function enterPfProject(){
   pfWheelLockedUntil = Date.now() + 420;
   updateGlobalProgress();
   updateHomeUiState();
+  updatePfProjectNav();
 }
 
 function exitPfProject(){
@@ -656,6 +670,7 @@ function exitPfProject(){
   pfWheelLockedUntil = Date.now() + 420;
   updateGlobalProgress();
   updateHomeUiState();
+  updatePfProjectNav();
 }
 
 pfProject.classList.remove("is-active");
@@ -671,6 +686,28 @@ pfViewBtn?.addEventListener("click", (e) => {
 pfExitBtn?.addEventListener("click", (e) => {
   e.preventDefault();
   exitPfProject();
+});
+
+pfProjPrevBtn?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  if (!pfState.active || pfBook.active) return;
+  const prev = Math.max(0, pfState.slide - 1);
+  if (prev !== pfState.slide) {
+    setPfSlide(prev);
+    pfWheelLockedUntil = Date.now() + 320;
+  }
+});
+
+pfProjNextBtn?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  if (!pfState.active || pfBook.active) return;
+  const next = Math.min(PF_SLIDE_MAX, pfState.slide + 1);
+  if (next !== pfState.slide) {
+    setPfSlide(next);
+    pfWheelLockedUntil = Date.now() + 320;
+  }
 });
 
 /* PF book */
@@ -718,6 +755,7 @@ function enterBookMode(){
   pfWheelLockedUntil = Date.now() + 420;
   updateGlobalProgress();
   updateHomeUiState();
+  updatePfProjectNav();
 }
 
 function exitBookMode(){
@@ -730,6 +768,7 @@ function exitBookMode(){
   pfWheelLockedUntil = Date.now() + 420;
   updateGlobalProgress();
   updateHomeUiState();
+  updatePfProjectNav();
 }
 
 pfReadBtn?.addEventListener("click", (e) => {
@@ -815,11 +854,22 @@ function pfStep(dir){
 /* ============================= */
 /* Tuborg project                */
 /* ============================= */
+function updateTbProjectNav(){
+  if (!tbProjPrevBtn || !tbProjNextBtn) return;
+
+  const hidePrev = !tbState.active || tbState.slide === 0;
+  const hideNext = !tbState.active || tbState.slide === TB_SLIDE_MAX;
+
+  tbProjPrevBtn.classList.toggle("is-hidden", hidePrev);
+  tbProjNextBtn.classList.toggle("is-hidden", hideNext);
+}
+
 function setTbSlide(idx){
   const prev = tbState.slide;
   tbState.slide = idx;
   animateSlideChange(tbVpContent, prev, idx, "data-tb-slide");
   updateGlobalProgress();
+  updateTbProjectNav();
 }
 
 function enterTbProject(){
@@ -836,6 +886,7 @@ function enterTbProject(){
   tbWheelLockedUntil = Date.now() + 420;
   updateGlobalProgress();
   updateHomeUiState();
+  updateTbProjectNav();
 }
 
 function exitTbProject(){
@@ -850,6 +901,7 @@ function exitTbProject(){
   tbWheelLockedUntil = Date.now() + 420;
   updateGlobalProgress();
   updateHomeUiState();
+  updateTbProjectNav();
 }
 
 tbProject.classList.remove("is-active");
@@ -870,6 +922,28 @@ tbEnterBtn?.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
   window.open("https://abiha-imran.github.io/tuborg-bubbles/", "_blank", "noopener,noreferrer");
+});
+
+tbProjPrevBtn?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  if (!tbState.active) return;
+  const prev = Math.max(0, tbState.slide - 1);
+  if (prev !== tbState.slide){
+    setTbSlide(prev);
+    tbWheelLockedUntil = Date.now() + 320;
+  }
+});
+
+tbProjNextBtn?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  if (!tbState.active) return;
+  const next = Math.min(TB_SLIDE_MAX, tbState.slide + 1);
+  if (next !== tbState.slide){
+    setTbSlide(next);
+    tbWheelLockedUntil = Date.now() + 320;
+  }
 });
 
 function tbStep(dir){
@@ -1030,6 +1104,8 @@ function resetProjectStatesForMenuNavigation(){
 
   tiltToHome();
   updateHomeUiState();
+  updatePfProjectNav();
+  updateTbProjectNav();
 }
 
 logo?.addEventListener("click", (e) => {
@@ -1200,6 +1276,8 @@ window.addEventListener("resize", () => {
   }
 
   updateHomeUiState();
+  updatePfProjectNav();
+  updateTbProjectNav();
 });
 
 /* Optional images missing => hide */
@@ -1229,3 +1307,5 @@ updateGlobalProgress();
 hideSayHiHover();
 closeSiteMenu();
 updateHomeUiState();
+updatePfProjectNav();
+updateTbProjectNav();
