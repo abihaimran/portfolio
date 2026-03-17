@@ -921,7 +921,7 @@ tbExitBtn?.addEventListener("click", (e) => {
 tbEnterBtn?.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  window.open("https://abiha-imran.github.io/tuborg-bubbles/", "_blank", "noopener,noreferrer");
+  window.open("https://project-submission.github.io/tuborg-prototype/", "_blank", "noopener,noreferrer");
 });
 
 tbProjPrevBtn?.addEventListener("click", (e) => {
