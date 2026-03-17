@@ -1,9 +1,14 @@
 const world = document.getElementById("world");
 const panels = Array.from(document.querySelectorAll(".panel"));
 const logo = document.getElementById("logoBtn");
+const hamburgerBtn = document.getElementById("hamburgerBtn");
 
 /* Global top progress */
 const topProgressFill = document.getElementById("topProgressFill");
+
+/* Main panel nav */
+const homePrevBtn = document.getElementById("homePrevBtn");
+const homeNextBtn = document.getElementById("homeNextBtn");
 
 /* Menu */
 const siteMenu = document.getElementById("siteMenu");
@@ -379,12 +384,60 @@ async function runTyping(panelIndex) {
 }
 
 /* ============================= */
+/* HOME UI NAV                   */
+/* ============================= */
+function updateHomeUiState(){
+  const inProjectMode = pfState.active || tbState.active;
+
+  if (homePrevBtn){
+    const shouldHidePrev = inProjectMode || currentPanel === 0;
+    homePrevBtn.classList.toggle("is-hidden", shouldHidePrev);
+  }
+
+  if (homeNextBtn){
+    const shouldHideNext = inProjectMode;
+    homeNextBtn.classList.toggle("is-hidden", shouldHideNext);
+    homeNextBtn.textContent = currentPanel === panels.length - 1 ? "Home" : "Next";
+  }
+}
+
+function goHomeFromUi(){
+  closeSiteMenu();
+  resetProjectStatesForMenuNavigation();
+  if (currentPanel !== 0) {
+    goToPanel(0);
+  } else {
+    updateHomeUiState();
+    updateGlobalProgress();
+  }
+}
+
+function goPrevHomePanel(){
+  if (pfState.active || tbState.active) return;
+  if (currentPanel <= 0) return;
+  goToPanel(currentPanel - 1);
+}
+
+function goNextHomePanel(){
+  if (pfState.active || tbState.active) return;
+  if (currentPanel >= panels.length - 1) {
+    goToPanel(0);
+    return;
+  }
+  goToPanel(currentPanel + 1);
+}
+
+/* ============================= */
 /* PANEL NAV                     */
 /* ============================= */
 function goToPanel(nextIndex) {
   if (isAnimating) return;
   if (nextIndex < 0 || nextIndex >= panels.length) return;
-  if (nextIndex === currentPanel) return;
+  if (nextIndex === currentPanel) {
+    updateHomeUiState();
+    updateGlobalProgress();
+    return;
+  }
 
   isAnimating = true;
   currentPanel = nextIndex;
@@ -400,6 +453,7 @@ function goToPanel(nextIndex) {
       wheelLockedUntil = Date.now() + 420;
       runTyping(currentPanel);
       updateGlobalProgress();
+      updateHomeUiState();
     }
   });
 }
@@ -580,6 +634,7 @@ function enterPfProject(){
   wheelLockedUntil = Date.now() + 420;
   pfWheelLockedUntil = Date.now() + 420;
   updateGlobalProgress();
+  updateHomeUiState();
 }
 
 function exitPfProject(){
@@ -600,6 +655,7 @@ function exitPfProject(){
   wheelLockedUntil = Date.now() + 420;
   pfWheelLockedUntil = Date.now() + 420;
   updateGlobalProgress();
+  updateHomeUiState();
 }
 
 pfProject.classList.remove("is-active");
@@ -661,6 +717,7 @@ function enterBookMode(){
   setBookPage(1);
   pfWheelLockedUntil = Date.now() + 420;
   updateGlobalProgress();
+  updateHomeUiState();
 }
 
 function exitBookMode(){
@@ -672,6 +729,7 @@ function exitBookMode(){
   setPfSlide(5);
   pfWheelLockedUntil = Date.now() + 420;
   updateGlobalProgress();
+  updateHomeUiState();
 }
 
 pfReadBtn?.addEventListener("click", (e) => {
@@ -777,6 +835,7 @@ function enterTbProject(){
 
   tbWheelLockedUntil = Date.now() + 420;
   updateGlobalProgress();
+  updateHomeUiState();
 }
 
 function exitTbProject(){
@@ -790,6 +849,7 @@ function exitTbProject(){
 
   tbWheelLockedUntil = Date.now() + 420;
   updateGlobalProgress();
+  updateHomeUiState();
 }
 
 tbProject.classList.remove("is-active");
@@ -969,9 +1029,16 @@ function resetProjectStatesForMenuNavigation(){
   jwTeaser?.classList.remove("is-hover");
 
   tiltToHome();
+  updateHomeUiState();
 }
 
 logo?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  goHomeFromUi();
+});
+
+hamburgerBtn?.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
   if (siteMenu?.classList.contains("is-open")) closeSiteMenu();
@@ -994,6 +1061,19 @@ siteMenuItems.forEach(item => {
       goToPanel(target);
     }, 20);
   });
+});
+
+/* Main panel nav click */
+homePrevBtn?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  goPrevHomePanel();
+});
+
+homeNextBtn?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  goNextHomePanel();
 });
 
 /* ============================= */
@@ -1118,6 +1198,8 @@ window.addEventListener("resize", () => {
   } else {
     tiltToHome();
   }
+
+  updateHomeUiState();
 });
 
 /* Optional images missing => hide */
@@ -1146,3 +1228,4 @@ tiltToHome();
 updateGlobalProgress();
 hideSayHiHover();
 closeSiteMenu();
+updateHomeUiState();
