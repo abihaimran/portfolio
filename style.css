@@ -410,10 +410,11 @@ body{ overflow:hidden; background:#000; }
   height:452px;
 }
 .home-asset-design{
-  left:154px;
-  top:514px;
-  width:1088px;
-  height:356px;
+  left:162px;
+  top:524px;
+  width:1068px;
+  height:348px;
+}
 }
 .home-asset-portfolio{
   left:537px;
@@ -1369,7 +1370,7 @@ img[data-optional="true"]{ display:block; }
   }
 
   .home-nav{
-    font-size:25px;
+    font-size:20px;
   }
 
   .site-menu{
