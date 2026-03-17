@@ -97,6 +97,9 @@ body{ overflow:hidden; background:#000; }
 .ui{
   position:fixed;
   top:0; left:0; right:0;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
   padding:var(--ui-pad);
   padding-top:calc(var(--ui-pad) + 10px);
   z-index:15000;
@@ -110,11 +113,59 @@ body{ overflow:hidden; background:#000; }
   cursor:pointer;
 }
 
+.hamburger{
+  width:38px;
+  height:38px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:6px;
+  background:transparent;
+  border:none;
+  padding:0;
+  pointer-events:auto;
+  cursor:pointer;
+}
+.hamburger span{
+  display:block;
+  width:100%;
+  height:4px;
+  border-radius:999px;
+  background:var(--red);
+}
+
+/* Main panel nav */
+.home-nav{
+  position:fixed;
+  top:50%;
+  transform:translateY(-50%);
+  background:transparent;
+  border:none;
+  padding:0;
+  font-family:"Roboto Mono", monospace;
+  font-size:25px;
+  font-weight:400;
+  color:var(--red);
+  cursor:pointer;
+  z-index:14990;
+  user-select:none;
+}
+.home-nav-prev{
+  left:var(--ui-pad);
+}
+.home-nav-next{
+  right:var(--ui-pad);
+}
+.home-nav.is-hidden{
+  display:none !important;
+}
+
 /* Menu */
 .site-menu{
   position:fixed;
   top:72px;
-  left:68px;
+  right:68px;
+  left:auto;
   width:350px;
   min-height:430px;
   padding:28px 22px 24px 22px;
@@ -356,10 +407,10 @@ body{ overflow:hidden; background:#000; }
   height:452px;
 }
 .home-asset-design{
-  left:111px;
-  top:460px;
-  width:1219px;
-  height:412px;
+  left:132px;
+  top:476px;
+  width:1178px;
+  height:398px;
 }
 .home-asset-portfolio{
   left:537px;
@@ -1233,7 +1284,24 @@ img[data-optional="true"]{ display:block; }
   }
 
   .logo{ width:34px; }
+
+  .hamburger{
+    width:34px;
+    height:34px;
+    gap:5px;
+  }
+
+  .hamburger span{
+    height:4px;
+  }
+
+  .home-nav{
+    font-size:20px;
+  }
+
+  .site-menu{
+    right:28px;
+    width:calc(100vw - 56px);
+    max-width:350px;
+  }
 }
-
-
-
