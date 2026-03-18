@@ -903,6 +903,7 @@ body.pf-mode .pf-overlay{
   opacity:0;
   pointer-events:none;
   user-select:none;
+  z-index:500;
 }
 .pf-proj-prev{
   left:-84px;
