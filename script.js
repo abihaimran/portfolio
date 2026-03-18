@@ -96,6 +96,7 @@ const TB_SLIDE_MAX = 6;
 
 /* Say hi state */
 let sayHiCopiedTimer = null;
+let sayHiHoverActive = false;
 
 /* Faster type speeds */
 const TYPE_SPEED_MONO = 60;
@@ -321,9 +322,6 @@ async function runTyping(panelIndex) {
 
   if (panelIndex === 7) {
     if (panel.dataset.typed === "true") return;
-    if (sayHiDefaultText) {
-      await typeInto(sayHiDefaultText, sayHiDefaultText.dataset.text || "", TYPE_SPEED_MONO);
-    }
     panel.dataset.typed = "true";
     return;
   }
@@ -921,7 +919,7 @@ tbExitBtn?.addEventListener("click", (e) => {
 tbEnterBtn?.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  window.open("https://project-submission.github.io/tuborg-prototype/", "_blank", "noopener,noreferrer");
+  window.open("https://abiha-imran.github.io/tuborg-bubbles/", "_blank", "noopener,noreferrer");
 });
 
 tbProjPrevBtn?.addEventListener("click", (e) => {
@@ -977,17 +975,30 @@ function resetSayHiEmailLabel(){
 
 function showSayHiHover(){
   if (!sayHiImg || !sayHiRec || !sayHiDefaultText || !sayHiHoverText) return;
+  if (sayHiHoverActive) return;
+
+  sayHiHoverActive = true;
+
+  gsap.killTweensOf([sayHiDefaultText, sayHiRec, sayHiHoverText]);
 
   sayHiImg.src = "assets/say_hi_2.png";
   sayHiImg.classList.add("is-hover");
 
+  gsap.set(sayHiDefaultText, { autoAlpha: 1 });
+  gsap.set(sayHiHoverText, { autoAlpha: 0 });
+  gsap.set(sayHiRec, { autoAlpha: 0 });
+
   gsap.to(sayHiDefaultText, { autoAlpha: 0, duration: 0.18, ease: "power2.out" });
-  gsap.to(sayHiRec, { autoAlpha: 0, duration: 0.01, ease: "none" });
   gsap.to(sayHiHoverText, { autoAlpha: 1, duration: 0.22, ease: "power2.out" });
 }
 
 function hideSayHiHover(){
   if (!sayHiImg || !sayHiRec || !sayHiDefaultText || !sayHiHoverText) return;
+  if (!sayHiHoverActive) return;
+
+  sayHiHoverActive = false;
+
+  gsap.killTweensOf([sayHiDefaultText, sayHiRec, sayHiHoverText]);
 
   sayHiImg.src = "assets/say_hi_1.png";
   sayHiImg.classList.remove("is-hover");
@@ -998,8 +1009,11 @@ function hideSayHiHover(){
     sayHiCopiedTimer = null;
   }
 
+  gsap.set(sayHiDefaultText, { autoAlpha: 0 });
+  gsap.set(sayHiHoverText, { autoAlpha: 1 });
+  gsap.set(sayHiRec, { autoAlpha: 0 });
+
   gsap.to(sayHiDefaultText, { autoAlpha: 1, duration: 0.18, ease: "power2.out" });
-  gsap.to(sayHiRec, { autoAlpha: 0, duration: 0.01, ease: "none" });
   gsap.to(sayHiHoverText, { autoAlpha: 0, duration: 0.18, ease: "power2.out" });
 }
 
