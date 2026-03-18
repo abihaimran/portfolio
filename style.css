@@ -493,6 +493,10 @@ body{ overflow:hidden; background:#000; }
   font-weight:400;
   opacity:1;
 }
+.sayhi-emphasis{
+  font-weight:500;
+  text-decoration:underline;
+}
 
 .sayhi-hover-text{
   font-size:30px;
