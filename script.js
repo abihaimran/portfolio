@@ -1323,3 +1323,27 @@ closeSiteMenu();
 updateHomeUiState();
 updatePfProjectNav();
 updateTbProjectNav();
+
+/* ============================= */
+/* Deep linking (project links)  */
+/* ============================= */
+
+function handleDeepLink(){
+  const hash = window.location.hash;
+
+  if (hash === "#past-forward"){
+    goToPanel(3); // ← adjust if PF is on different panel
+    setTimeout(() => {
+      enterPfProject();
+    }, 900);
+  }
+
+  if (hash === "#tuborg"){
+    goToPanel(4); // ← adjust index if needed
+    setTimeout(() => {
+      enterTbProject();
+    }, 900);
+  }
+}
+
+window.addEventListener("load", handleDeepLink);
