@@ -638,6 +638,8 @@ function enterPfProject(){
   pfProject.classList.remove("is-book");
   pfProject.setAttribute("aria-hidden", "false");
   document.body.classList.add("pf-mode");
+  
+  window.location.hash = "past-forward"; 
 
   tiltToProject();
   setPfSlide(0);
@@ -877,6 +879,8 @@ function enterTbProject(){
   tbProject.classList.add("is-active");
   tbProject.setAttribute("aria-hidden","false");
   document.body.classList.add("tb-mode");
+
+  window.location.hash = "tuborg";
 
   tiltToProject();
   setTbSlide(0);
